@@ -35,21 +35,26 @@ io.on('connection', function(socket){
   */
 
   socket.on('layout-updated', function (data) {
-    if (universe) universe.close();
+    console.log(data);
+    //if (universe) universe.close();
     universe = dmx.addUniverse('myuniverse', 'dmxking-ultra-dmx-pro', '/dev/ttyUSB0');
     channelValues = {};
     for (var d = 0; d < data['dmxControllers'].length; d++) {
       var dmxController = data['dmxControllers'][d];
+      console.log(dmxController);
       for (var u = 0; u < dmxController['universes'].length; u++) {
         var uni = dmxController['universes'][u];
         var universe = dmx.addUniverse(universe.name, dmxController.type, '/dev/ttyUSB0'); // make usb port changable
         universes.push(universe);
+        console.log(universe);
         for (var f = 0; f < uni.fixtures.length; f++) {
           var fixture = uni.fixtures[f];
+          console.log(fixture);
           for (var c = 0; c < fixture.channels.length; c++) {
             var channel = fixture.channels[c];
             channelValues[fixture.startingAdress + c + 1] = channel.value; // this library counts up from 1, not 0
-          }
+            console.log(channel);
+        }
         }
         dmx.update(universe.name, channelValues)
       }
