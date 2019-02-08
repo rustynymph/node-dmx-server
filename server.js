@@ -44,7 +44,7 @@ const dmx = new DMX();
 const universe = dmx.addUniverse('myuniverse', 'dmxking-ultra-dmx-pro', '/dev/ttyUSB0');
 //const universe = dmx.addUniverse('myuniverse', 'enttec-usb-dmx-pro', '/dev/ttyUSB0');
 
-dmx.update('myuniverse', {1: 100, 2: 255, 3: 50, 4: 255})
+//dmx.update('myuniverse', {1: 100, 2: 255, 3: 50, 4: 255})
 
 function hexToRgb(hex) {
     var result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
