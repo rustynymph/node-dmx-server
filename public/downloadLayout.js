@@ -53,5 +53,4 @@ function saveLayout() {
 
   function updateServer(layout) {  // send the server the updated rig information
     socket.emit('layout-updated', layout);
-    console.log(value);
   }
