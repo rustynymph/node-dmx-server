@@ -6,7 +6,7 @@ class Fixture {
     this.numChannels = 8;
     this.channels = [];
     for (var i = 0; i < 8; i++) {
-      this.channels.push(new Channel());
+      this.channels.push(new Channel(i));
     }
     this.size = 75;
     this.radius = this.size/2;

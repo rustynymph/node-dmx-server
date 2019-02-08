@@ -1,7 +1,7 @@
 class Channel {
-  constructor() {
-    this.name = "";
-    this.number = 0;
+  constructor(number) {
+    this.number = number;
+    this.name = "channel" + this.number;
     this.value = 0;
   }
 }
