@@ -1,0 +1,13 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+  <title>Node DMX app!</title>
+  <script src="/socket.io/socket.io.js"></script>
+  <script src="./index.js"></script>
+</head>
+<body>
+  Hello!
+  <input type="color" id="color-picker" name="color-picker" value="#ff0000" onchange="updateColor(this.value)">
+  <input type="range" id="brightness" name="brightness" min="0" max="255" onchange="updateBrightness(this.value)">
+</body>
+</html>
