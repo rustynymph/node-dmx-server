@@ -42,10 +42,10 @@ class Fixture {
     this.redChannel = 1;
     this.greenChannel = 2;
     this.BlueChannel = 3;
-    this.channels[this.brightnessChannel] = 255;
-    this.channels[this.redChannel] = 255;
-    this.channels[this.greenChannel] = 0;
-    this.channels[this.BlueChannel] = 0;
+    this.channels[this.brightnessChannel].value = 255;
+    this.channels[this.redChannel].value = 255;
+    this.channels[this.greenChannel].value = 0;
+    this.channels[this.BlueChannel].value = 0;
   }
 
   display() {
