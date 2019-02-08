@@ -64,7 +64,11 @@ class Fixture {
   constructor(number) {
     this.name = '';
     this.number = number
-    this.numChannels = 0;
+    this.numChannels = 8;
+    this.channels = [];
+    for (var i = 0; i < 8; i++) {
+      this.channels.push(new Channel());
+    }
     this.size = 75;
     this.x = this.size;      
     this.y = this.size;
@@ -76,10 +80,13 @@ class Fixture {
     this.brightness = 100;    
     this.locked = false;
     this.nameInput = createInput('Fixture' + this.number.toString());
-    this.nameInput.position(this.x/4, this.y+this.size)
+    this.nameInput.position(this.x/4, this.y+this.size-20);
     this.nameInput.changed(() => this.updateName());    
+    this.channelsInput = createInput('8');
+    this.channelsInput.position(this.x/4, this.y+this.size)
+    this.channelsInput.changed(() => this.updateChannelNumber());        
     this.colorpicker = createColorPicker(this.color);
-    this.brightnesspicker = createSlider(this.brightness);
+    this.brightnesspicker = createSlider(0, 255, this.brightness);
     this.colorpicker.position(this.x/4, this.y+this.size+25);
     this.colorpicker.changed(() => this.updateColor());      
     //this.colorpicker.changed(this.updateColor); 
@@ -96,9 +103,10 @@ class Fixture {
       stroke(0);
     }    
     ellipse(this.x, this.y, this.size, this.size);
-    this.colorpicker.position(this.x-this.size/4, this.y+this.size/2+20);
-    this.brightnesspicker.position(this.x-this.size/4, this.y+this.size+25);
-    this.nameInput.position(this.x-this.size/4, this.y+this.size+50);
+    this.nameInput.position(this.x-this.size/4, this.y+this.size-20);
+    this.channelsInput.position(this.x-this.size/4, this.y+this.size);
+    this.colorpicker.position(this.x-this.size/4, this.y+this.size+20);
+    this.brightnesspicker.position(this.x-this.size/4, this.y+this.size+50);
   }
 
   isHovered() {
@@ -133,8 +141,11 @@ class Fixture {
   }  
 
   updateColor() {
-    console.log(this.number);
     this.color = this.colorpicker.value();
+    rgbColor = hexToRgb(this.color);
+    this.redChannel.value = rgbColor['r'];
+    this.greenChannel.value = rgbColor['g'];
+    this.blueChannel.value = rgbColor['b'];
   }
 
   updateBrightness() {
@@ -144,6 +155,10 @@ class Fixture {
   updateName() {
     this.name = this.nameInput.value();
   }
+
+  updateChannelNumber() {
+    this.numChannels = this.channelsInput.value();
+  }  
 }
 
 class Channel {
@@ -151,4 +166,19 @@ class Channel {
     this.name = "";
     this.value = 0;
   }
+}
+
+function updateRig(){
+  for (var i=0; i < universe.fixtures.length; i++){
+
+  }
+}
+
+function hexToRgb(hex) {
+  var result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
+  return result ? {
+      r: parseInt(result[1], 16),
+      g: parseInt(result[2], 16),
+      b: parseInt(result[3], 16)
+  } : null;
 }
