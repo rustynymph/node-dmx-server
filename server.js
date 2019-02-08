@@ -48,7 +48,8 @@ io.on('connection', function(socket){
           var fixture = uni['fixtures'][f];
           for (var c = 0; c < fixture['channels'].length; c++) {
             var channel = fixture['channels'][c];
-            channelValues[fixture['startingAdress'] + c + 1] = channel['value']; // this library counts up from 1, not 0
+            //channelValues[fixture['startingAdress'] + c + 1] = channel['value']; // this library counts up from 1, not 0
+            channelValues[c + 1] = channel['value']; // this library counts up from 1, not 0
         }
         }
         console.log(channelValues);
