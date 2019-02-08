@@ -1,171 +1,157 @@
+// there should be separate modes: layout editing, live control, scene programming, pattern/animation programming
+
+var DMXControllerOptions = ['dmxking-ultra-dmx-pro', 'enttec-usb-dmx-pro', 'enttec-open-usb-dmx', 'artnet', 'bbdmx', 'dmx4all'];
+var dmxControllers = [];
+var universes;
 var universe;
 var locked = false;
+var layoutObjects;
+var inProgressLineStartPointX = inProgressLineStartPointY = 0;
+var inProgressLineEndPointX = inProgressLineEndPointY = 0;
+var lineDrawingInProgress = false;
+var firstConnectionInLine = null;
+var cables = [];
 
 function setup() {
-  universe = new Universe();
+  universes = [];
+  universe = new Universe(universes.length);
+  universes.push(universe);
 
   var canvas = createCanvas((windowWidth) / 1.02, (windowHeight) / 1.02);
-  // cnv.style('display', 'block');
+  canvas.style('display', 'block');
   canvas.parent('fixture-editor');
 
-  fixtureButton = createButton('Add fixture');
+  fixtureButton = createButton('Add DMX Controller');
   fixtureButton.position(10, 10);
-  fixtureButton.mousePressed(addFixture);
+  fixtureButton.mousePressed(addDMXController);
+
+  fixtureButton = createButton('Add fixture');
+  fixtureButton.position(10, 30);
+  fixtureButton.mousePressed(() => addFixture(0));
+
+  fixtureButton = createButton('Save rig layout');
+  fixtureButton.position(10, 50);
+  fixtureButton.mousePressed(saveLayout);  
+
+  animationButton = createButton('Animation editor');
+  animationButton.position(10, 70);
+  //animationButton.mousePressed(); 
+  
+  liveModeButton = createButton('LIVE MODE');
+  liveModeButton.position(10, 90);
+  //liveModeButton.mousePressed();   
 }
 
 function draw() { 
   background(0);
-  for (let i = 0; i < universe.fixtures.length; i++) {
-    universe.fixtures[i].display();
+  /* Update fixture layout based on current state, this includes positions, colors, hovering, etc */
+  layoutObjects = [];
+  layoutObjects = layoutObjects.concat(dmxControllers);
+  for (let d = 0; d < dmxControllers.length; d++) {
+    layoutObjects.push(dmxControllers[d].out);
   }
+  // at some point universes should be children of dmx controllers
+  for (let u = 0; u < universes.length; u++) {
+    for (let f = 0; f < universes[u].fixtures.length; f++){
+      var fixture = universes[u].fixtures[f];
+      layoutObjects.push(fixture.in);
+      layoutObjects.push(fixture.out);
+    }
+    layoutObjects = layoutObjects.concat(universes[u].fixtures);
+  }
+  for (let i = 0; i < layoutObjects.length; i++) {
+    layoutObjects[i].display();
+  }
+
+  for (var c = 0; c < cables.length; c++) {
+    cables[c].display();
+  }
+
+  if (lineDrawingInProgress) {
+    stroke(255);
+    line(inProgressLineStartPointX, inProgressLineStartPointY, mouseX, mouseY);
+  }
+
 }
 
 function mousePressed() {
-  for (let i = 0; i < universe.fixtures.length; i++) {
-    var fixture = universe.fixtures[i]
-    if (fixture.isHovered()) {
-      fixture.pressed();
+  for (let i = 0; i < layoutObjects.length; i++) {
+    var thing = layoutObjects[i];
+    if (thing.isHovered && thing.isHovered()) {
+      if (thing.pressed) thing.pressed();
     }
   }
 }
 
 function mouseDragged() {
-  for (let i = 0; i < universe.fixtures.length; i++) {
-    var fixture = universe.fixtures[i]
-    if (fixture.isHovered()) {
-      fixture.dragged();
+  if (lineDrawingInProgress) {
+    inProgressLineEndPointX = mouseX;
+    inProgressLineEndPointY = mouseY;
+  } else {
+    for (let i = 0; i < layoutObjects.length; i++) {
+      var thing = layoutObjects[i];
+      if (thing.isHovered()) {
+        thing.dragged();
+        if (thing.connectingAWire && thing.connectingAWire() && thing.type == 'out'){
+          if (!thing.connectedTo) { // the thing is not currently connected to anything
+            if (!lineDrawingInProgress){
+              firstConnectionInLine = thing;
+              inProgressLineStartPointX = thing.x;
+              inProgressLineStartPointY = thing.y;
+              lineDrawingInProgress = true;
+            }
+          }
+          else console.log("already connected to something");
+          for (var c = 0; c < cables.length; c++) {
+            if (cables[c].firstObject == thing) {
+              cables[c].firstObject.connectedTo = null;
+              cables[c].secondObject.connectedBy = null;
+              delete cables[c];
+              cables.splice(c, 1);
+              return;
+            }
+          }
+        }
+      }
     }
   }
 }
 
 function mouseReleased() {
-  for (let i = 0; i < universe.fixtures.length; i++) {
-    universe.fixtures[i].released();
-  }
-}
-
-function addFixture() {
-  universe.addFixture(new Fixture(universe.fixtures.length));
-}
-
-class Universe {
-  constructor() {
-    this.name = "";
-    this.numFixtures = 0;
-    this.fixtures = [];
-  }
-
-  addFixture(fixture) {
-    this.fixtures.push(fixture);
-  }
-}
-
-class Fixture {
-  constructor(number) {
-    this.name = '';
-    this.number = number
-    this.numChannels = 8;
-    this.channels = [];
-    for (var i = 0; i < 8; i++) {
-      this.channels.push(new Channel());
+  if (lineDrawingInProgress){
+    for (let i = 0; i < layoutObjects.length; i++) {
+      var thing = layoutObjects[i];
+      if (thing.isHovered() && thing.connectingAWire && // we are hovering an attachable node
+         (thing.parent != firstConnectionInLine.parent && // don't connect with a cable if part of same fixture
+            (thing.type != firstConnectionInLine.type))) { // don't connect with cable unless it's an in and out connection
+              console.log("yeah");
+              var cable = new Cable(firstConnectionInLine, thing);
+              cables.push(cable);
+              firstConnectionInLine.connectedTo = thing;
+              thing.connectedBy = firstConnectionInLine;
+            }
     }
-    this.size = 75;
-    this.x = this.size;      
-    this.y = this.size;
-    this.hovered = false;   
-    this.beingDragged = false;
-    this.xOffset = 0; 
-    this.yOffset = 0; 
-    this.color = '#ff0000';
-    this.brightness = 100;    
-    this.locked = false;
-    this.nameInput = createInput('Fixture' + this.number.toString());
-    this.nameInput.position(this.x/4, this.y+this.size-20);
-    this.nameInput.changed(() => this.updateName());    
-    this.channelsInput = createInput('8');
-    this.channelsInput.position(this.x/4, this.y+this.size)
-    this.channelsInput.changed(() => this.updateChannelNumber());        
-    this.colorpicker = createColorPicker(this.color);
-    this.brightnesspicker = createSlider(0, 255, this.brightness);
-    this.colorpicker.position(this.x/4, this.y+this.size+25);
-    this.colorpicker.changed(() => this.updateColor());      
-    //this.colorpicker.changed(this.updateColor); 
-    this.brightnesspicker.position(this.x/4, this.y+this.size+50);
-    this.brightnesspicker.changed(() => this.updateBrightness());      
+    // check if mouse hovered over another node, if so connect it. Otherwise cancel the line
   }
+  lineDrawingInProgress = false;
+  for (let i = 0; i < layoutObjects.length; i++) {
+      var thing = layoutObjects[i];
+      if (thing.released) thing.released();
+  }
+}
 
-  display() {
-    // check if being hovered or dragged
-    fill(this.color);
-    if (this.isHovered()) {
-        stroke(255); 
-    } else {
-      stroke(0);
-    }    
-    ellipse(this.x, this.y, this.size, this.size);
-    this.nameInput.position(this.x-this.size/4, this.y+this.size-20);
-    this.channelsInput.position(this.x-this.size/4, this.y+this.size);
-    this.colorpicker.position(this.x-this.size/4, this.y+this.size+20);
-    this.brightnesspicker.position(this.x-this.size/4, this.y+this.size+50);
-  }
-
-  isHovered() {
-    if (mouseX > this.x-this.size && mouseX < this.x+this.size && 
-      mouseY > this.y-this.size && mouseY < this.y+this.size) {
-        return true;
-    } else {
-      return false;
-    }    
-  }
-
-  pressed() {
-    if(this.isHovered() && (!locked || this.locked)) { 
-      fill(255, 255, 255);
-      locked = true;
-      this.locked = true;
-    }
-    this.xOffset = mouseX-this.x; 
-    this.yOffset = mouseY-this.y; 
-  }
-  
-  dragged() {
-    if (locked && this.locked){
-      this.x = mouseX-this.xOffset; 
-      this.y = mouseY-this.yOffset; 
+function addFixture(universeNumber) {
+  for (var u = 0; u < universes.length; u++) {
+    universe = universes[u];
+    if (universe.number == universeNumber) {
+      universe.addFixture(new Fixture(universe.fixtures.length));
+      return;
     }
   }
-  
-  released() {
-    this.locked = false;
-    locked = false;
-  }  
-
-  updateColor() {
-    this.color = this.colorpicker.value();
-    rgbColor = hexToRgb(this.color);
-    this.redChannel.value = rgbColor['r'];
-    this.greenChannel.value = rgbColor['g'];
-    this.blueChannel.value = rgbColor['b'];
-  }
-
-  updateBrightness() {
-    this.brightness = this.brightnesspicker.value();
-  }
-
-  updateName() {
-    this.name = this.nameInput.value();
-  }
-
-  updateChannelNumber() {
-    this.numChannels = this.channelsInput.value();
-  }  
 }
 
-class Channel {
-  constructor() {
-    this.name = "";
-    this.value = 0;
-  }
+function addDMXController() {
+  dmxControllers.push(new DMXController(DMXControllerOptions[0], dmxControllers.length));
 }
 
 function updateRig(){
