@@ -35,6 +35,7 @@ io.on('connection', function(socket){
   */
 
   socket.on('layout-updated', function (data) {
+    console.log(data + '\n\n\n');
     //if (universe) universe.close();
     channelValues = {};
     for (var d = 0; d < data['dmxControllers'].length; d++) {
