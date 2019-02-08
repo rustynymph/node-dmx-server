@@ -101,14 +101,14 @@ class Fixture {
     this.r = rgbColor['r'];
     this.g = rgbColor['g'];
     this.b = rgbColor['b'];
-    this.channels[this.redChannel] = this.r;
-    this.channels[this.greenChannel] = this.g;
-    this.channels[this.BlueChannel] = this.b;
+    this.channels[this.redChannel].value = this.r;
+    this.channels[this.greenChannel].value = this.g;
+    this.channels[this.BlueChannel].value = this.b;
   }
 
   updateBrightness() { 
       this.brightness = this.brightnesspicker.value(); 
-      this.channels[this.brightnessChannel] = this.brightness;
+      this.channels[this.brightnessChannel].value = this.brightness;
     }
 
   updateName() { this.name = this.nameInput.value(); }
