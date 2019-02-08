@@ -38,6 +38,14 @@ class Fixture {
     this.in = new FixtureIn(this);  
     this.out = new FixtureOut(this);
     this.startingAddress = 0;
+    this.brightnessChannel = 0;
+    this.redChannel = 1;
+    this.greenChannel = 2;
+    this.BlueChannel = 3;
+    this.channels[this.brightnessChannel] = 255;
+    this.channels[this.redChannel] = 255;
+    this.channels[this.greenChannel] = 0;
+    this.channels[this.BlueChannel] = 0;
   }
 
   display() {
@@ -93,12 +101,16 @@ class Fixture {
     this.r = rgbColor['r'];
     this.g = rgbColor['g'];
     this.b = rgbColor['b'];
-    //this.redChannel.value = rgbColor['r'];
-    //this.greenChannel.value = rgbColor['g'];
-    //this.blueChannel.value = rgbColor['b'];
+    this.channels[this.redChannel] = this.r;
+    this.channels[this.greenChannel] = this.g;
+    this.channels[this.BlueChannel] = this.b;
   }
 
-  updateBrightness() { this.brightness = this.brightnesspicker.value(); }
+  updateBrightness() { 
+      this.brightness = this.brightnesspicker.value(); 
+      this.channels[this.brightnessChannel] = this.brightness;
+    }
+
   updateName() { this.name = this.nameInput.value(); }
   updateChannelNumber() { this.numChannels = this.channelsInput.value(); }  
 }

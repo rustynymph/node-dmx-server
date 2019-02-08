@@ -35,13 +35,10 @@ io.on('connection', function(socket){
   */
 
   socket.on('layout-updated', function (data) {
-    console.log(data);
     //if (universe) universe.close();
-    universe = dmx.addUniverse('myuniverse', 'dmxking-ultra-dmx-pro', '/dev/ttyUSB0');
     channelValues = {};
     for (var d = 0; d < data['dmxControllers'].length; d++) {
       var dmxController = data['dmxControllers'][d];
-      //console.log(dmxController);
       for (var u = 0; u < dmxController['universes'].length; u++) {
         var uni = dmxController['universes'][u];
         var universe = dmx.addUniverse(universe.name, dmxController.type, '/dev/ttyUSB0'); // make usb port changable
