@@ -17,7 +17,10 @@ class Fixture {
     this.xOffset = 0; 
     this.yOffset = 0; 
     this.color = '#ff0000';
-    this.brightness = 100;    
+    this.r = 255;
+    this.g = 0;
+    this.b = 0;
+    this.brightness = 255;    
     this.locked = false;
     this.nameInput = createInput(this.name);
     this.nameInput.position(this.x/4, this.y+this.size-20);
@@ -26,10 +29,10 @@ class Fixture {
     this.channelsInput.position(this.x/4, this.y+this.size)
     this.channelsInput.changed(() => this.updateChannelNumber());        
     this.colorpicker = createColorPicker(this.color);
-    this.brightnesspicker = createSlider(0, 255, this.brightness);
     this.colorpicker.position(this.x/4, this.y+this.size+25);
     this.colorpicker.changed(() => this.updateColor());      
     //this.colorpicker.changed(this.updateColor); 
+    this.brightnesspicker = createSlider(0, 255, this.brightness);
     this.brightnesspicker.position(this.x/4, this.y+this.size+50);
     this.brightnesspicker.changed(() => this.updateBrightness());    
     this.in = new FixtureIn(this);  
@@ -44,7 +47,8 @@ class Fixture {
   }
 
   displayComponents() {
-    fill(this.color);
+    //fill(this.color);
+    fill(this.r, this.g, this.b, this.brightness);
     ellipse(this.x, this.y, this.size, this.size);
     this.nameInput.position(this.x-this.size/4, this.y+this.size-20);
     this.channelsInput.position(this.x-this.size/4, this.y+this.size);
@@ -85,6 +89,9 @@ class Fixture {
   updateColor() {
     this.color = this.colorpicker.value();
     var rgbColor = hexToRgb(this.color);
+    this.r = rgbColor['r'];
+    this.g = rgbColor['g'];
+    this.b = rgbColor['b'];
     //this.redChannel.value = rgbColor['r'];
     //this.greenChannel.value = rgbColor['g'];
     //this.blueChannel.value = rgbColor['b'];
