@@ -1,4 +1,4 @@
-function saveLayout() {
+function layoutToJson() {
     var layout = {dmxControllers: []};
     for (var d = 0; d < dmxControllers.length; d++) {
       dmxController = dmxControllers[d];
@@ -20,6 +20,11 @@ function saveLayout() {
       }
       layout['dmxControllers'].push(dmxControllerJson);
     }
+    return layout;
+}
+
+function saveLayout() {
+    var layout = layoutToJson();
     stringifiedLayout = JSON.stringify(layout);
     var d = new Date();
     var filename = 'fixturelayout' + '_' + (d.getMonth()+1).toString() + '_' + d.getDate() + '_' + d.getFullYear() + '.json';
@@ -43,4 +48,9 @@ function saveLayout() {
             window.URL.revokeObjectURL(url);  
         }, 0); 
     }
+  }
+
+  function updateServer(value) {  // send the server the updated rig information
+    socket.emit('layout-updated', layoutToJson());
+    console.log(value);
   }

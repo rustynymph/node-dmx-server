@@ -129,6 +129,9 @@ function mouseReleased() {
               cables.push(cable);
               firstConnectionInLine.connectedTo = thing;
               thing.connectedBy = firstConnectionInLine;
+              if (firstConnectionInLine.type) {
+                thing.startingAddress = 0;
+              }
             }
     }
     // check if mouse hovered over another node, if so connect it. Otherwise cancel the line

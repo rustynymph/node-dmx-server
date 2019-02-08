@@ -12,6 +12,12 @@ class DMXController {
       this.xOffset = 0; 
       this.yOffset = 0;     
       this.out = new DMXControllerOut(this);
+      this.controllerTypeSelector = createSelect();
+      this.controllerTypeSelector.position(this.x, this.y+this.size+10);
+      for (var c = 0; c < DMXControllerOptions.length; c++) {
+        this.controllerTypeSelector.option(DMXControllerOptions[c]);
+      }
+      this.controllerTypeSelector.changed(() => this.updateControllerType(this.controllerTypeSelector.value()));
     }
   
     display() {
@@ -20,6 +26,7 @@ class DMXController {
       if (this.isHovered()) stroke(255); 
       else stroke(0);
       rect(this.x, this.y, this.size, this.size);
+      this.controllerTypeSelector.position(this.x, this.y+this.size+10);
       this.out.display();
       fill(0);
       stroke(0);
@@ -56,8 +63,16 @@ class DMXController {
       this.locked = false;
       locked = false;
     }  
+
+    updateControllerType(controllerType) {
+        this.type = controllerType;
+    }   
+    
+    getControllerType() {
+        return this.type;
+    }
   
-  }
+}
 
 
 class DMXControllerOut {
