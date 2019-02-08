@@ -37,7 +37,7 @@ class Fixture {
     this.brightnesspicker.changed(() => this.updateBrightness());    
     this.in = new FixtureIn(this);  
     this.out = new FixtureOut(this);
-    this.startingAddress = null;
+    this.startingAddress = 0;
   }
 
   display() {
