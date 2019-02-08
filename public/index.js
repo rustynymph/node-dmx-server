@@ -1,12 +1,11 @@
 var socket = io();
 
-function updateColor(value) {
+function updateColorDMX(value) {
   socket.emit('dmx-color', {color: value});
   console.log(value);
 }
 
-function updateBrightness(value) {
+function updateBrightnessDMX(value) {
   socket.emit('dmx-brightness', {brightness: value});
   console.log(value);
 }
-
