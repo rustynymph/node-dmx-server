@@ -25,6 +25,7 @@ function layoutToJson() {
 
 function saveLayout() {
     var layout = layoutToJson();
+    updateServer(layout);
     stringifiedLayout = JSON.stringify(layout);
     var d = new Date();
     var filename = 'fixturelayout' + '_' + (d.getMonth()+1).toString() + '_' + d.getDate() + '_' + d.getFullYear() + '.json';
@@ -50,7 +51,7 @@ function saveLayout() {
     }
   }
 
-  function updateServer(value) {  // send the server the updated rig information
-    socket.emit('layout-updated', layoutToJson());
+  function updateServer(layout) {  // send the server the updated rig information
+    socket.emit('layout-updated', layout);
     console.log(value);
   }
