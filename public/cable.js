@@ -2,7 +2,6 @@ class Cable {
     constructor(firstObject, secondObject) {
         this.firstObject = firstObject;
         this.secondObject = secondObject;
-
     }
 
     display() {

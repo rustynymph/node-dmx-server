@@ -1,11 +1,9 @@
 class DMXController {
-    constructor(controllerType, number) {
+    constructor(controllerType) {
       this.type = controllerType;
-      this.number = number;
-      this.universes = [];
       this.locked = false;
       this.size = 80;
-      this.x = 100+this.size;      
+      this.x = 5+this.size;      
       this.y = 100+this.size;
       this.hovered = false;   
       this.beingDragged = false;
@@ -85,7 +83,6 @@ class DMXControllerOut {
         this.isConnectingAWire = false;
         this.type = 'out';
         this.connectedTo = null;  
-        this.connectedBy = null;       
     }
 
     display() {
@@ -133,9 +130,5 @@ class DMXControllerOut {
 
       updateConnectedTo(thing) {
         this.connectedTo = thing;
-    }
-
-    updateConnectedBy(thing) {
-        this.connectedBy = thing;
-    }       
+    }   
 }

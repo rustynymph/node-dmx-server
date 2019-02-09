@@ -7,7 +7,7 @@ const PORT     = 8888;
 
 const DMX = require('dmx')
 const dmx = new DMX();
-var universes = [];
+var universe;
 
 app.get('/', function(req, res){
   res.sendFile(__dirname + '/public/index.html');
@@ -19,29 +19,17 @@ io.on('connection', function(socket){
   console.log('a user connected');
   open_sockets.push(socket);
   
-  socket.on('layout-updated', function (data) {
-    console.log(JSON.stringify(data) + '\n\n\n');
-    //if (universe) universe.close();
-    channelValues = {};
-    for (var d = 0; d < data['dmxControllers'].length; d++) {
-      var dmxController = data['dmxControllers'][d];
-      for (var u = 0; u < dmxController['universes'].length; u++) {
-        var uni = dmxController['universes'][u];
-        if (uni['name'] == )
-        var universe = dmx.addUniverse(uni['name'], dmxController['type'], '/dev/ttyUSB0'); // make usb port changable
-        universes.push(universe);
-        for (var f = 0; f < uni['fixtures'].length; f++) {
-          var fixture = uni['fixtures'][f];
-          for (var c = 0; c < fixture['channels'].length; c++) {
-            var channel = fixture['channels'][c];
-            //channelValues[fixture['startingAdress'] + c + 1] = channel['value']; // this library counts up from 1, not 0
-            channelValues[c + 1] = channel['value']; // this library counts up from 1, not 0
-        }
-        }
-        console.log(channelValues);
-        dmx.update(uni['name'], channelValues);
-      }
+  socket.on('dmx-updated', function (data) {
+    var controllerType = data['dmxControllerType'];
+    var universeName = data['universeName'];
+    var channels = data['channels'];
+    if (dmx.universes[universeName]) {
+      dmx.universes[universeName] = new dmx.drivers[controllerType]('/dev/ttyUSB0');
+      universe = dmx.universes[universeName];
+    } else {
+      universe = dmx.addUniverse(universeName, controllerType, '/dev/ttyUSB0'); // make usb port changable
     }
+    dmx.update(universeName, channels);
   });
 
   socket.on('disconnect', function(){

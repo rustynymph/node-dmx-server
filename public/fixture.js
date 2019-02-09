@@ -10,8 +10,11 @@ class Fixture {
     }
     this.size = 75;
     this.radius = this.size/2;
-    this.x = 100+this.size;      
-    this.y = 100+this.size;
+    this.x = universe.fixtures.length*50+200+this.size;   
+    if (this.x >= windowWidth/1.25) {
+        this.x = 200+this.size;
+    }   
+    this.y = 130+this.size;
     this.hovered = false;   
     this.beingDragged = false;
     this.xOffset = 0; 
@@ -31,13 +34,13 @@ class Fixture {
     this.colorpicker = createColorPicker(this.color);
     this.colorpicker.position(this.x/4, this.y+this.size+25);
     this.colorpicker.changed(() => this.updateColor());      
-    //this.colorpicker.changed(this.updateColor); 
     this.brightnesspicker = createSlider(0, 255, this.brightness);
     this.brightnesspicker.position(this.x/4, this.y+this.size+50);
     this.brightnesspicker.changed(() => this.updateBrightness());    
     this.in = new FixtureIn(this);  
     this.out = new FixtureOut(this);
-    this.startingAddress = 0;
+    this.startingAddress = null;
+    //this.startingAddress = 0;
     this.brightnessChannel = 0;
     this.redChannel = 1;
     this.greenChannel = 2;

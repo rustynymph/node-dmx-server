@@ -1,6 +1,5 @@
 var DMXControllerOptions = ['dmxking-ultra-dmx-pro', 'enttec-usb-dmx-pro', 'enttec-open-usb-dmx', 'artnet', 'bbdmx', 'dmx4all'];
-var dmxControllers = [];
-var universes;
+var dmxController;
 var universe;
 var locked = false;
 var layoutObjects;
@@ -9,12 +8,11 @@ var inProgressLineEndPointX = inProgressLineEndPointY = 0;
 var lineDrawingInProgress = false;
 var firstConnectionInLine = null;
 var cables = [];
-var dmxControllerButton, fixtureButton, saveRigButton, animationButton, liveModeButton;
+var fixtureButton, saveRigButton, animationButton, liveModeButton;
 
 function setup() {
-  universes = [];
-  universe = new Universe(universes.length);
-  universes.push(universe);
+  dmxController = new DMXController(DMXControllerOptions[0]);
+  universe = new Universe(0);
   addUIButtons();
   var canvas = createCanvas((windowWidth) / 1.02, (windowHeight) / 1.02);
   canvas.style('display', 'block');
@@ -22,15 +20,12 @@ function setup() {
 }
 
 function addUIButtons() {
-  dmxControllerButton = createButton('Add DMX Controller');
-  dmxControllerButton.position(10, 10);
-  dmxControllerButton.mousePressed(addDMXController);
   fixtureButton = createButton('Add fixture');
   fixtureButton.position(10, 30);
   fixtureButton.mousePressed(() => addFixture(0));
   saveRigButton = createButton('Save rig layout');
   saveRigButton.position(10, 50);
-  saveRigButton.mousePressed(saveLayout);  
+  saveRigButton.mousePressed(saveProject);  
   animationButton = createButton('Animation editor');
   animationButton.position(10, 70);
   //animationButton.mousePressed(); 
@@ -46,18 +41,14 @@ function draw() {
 
 /* Update fixture layout based on current state, this includes positions, colors, hovering, etc */
 function displayObjects() {
-  layoutObjects = [];
-  layoutObjects = layoutObjects.concat(dmxControllers);
-  for (let d = 0; d < dmxControllers.length; d++) layoutObjects.push(dmxControllers[d].out);
+  layoutObjects = [dmxController, dmxController.out];
   // at some point universes should be children of dmx controllers
-  for (let u = 0; u < universes.length; u++) {
-    for (let f = 0; f < universes[u].fixtures.length; f++){
-      var fixture = universes[u].fixtures[f];
+    for (let f = 0; f < universe.fixtures.length; f++){
+      var fixture = universe.fixtures[f];
+      layoutObjects.push(fixture);
       layoutObjects.push(fixture.in);
       layoutObjects.push(fixture.out);
     }
-    layoutObjects = layoutObjects.concat(universes[u].fixtures);
-  }
   for (let i = 0; i < layoutObjects.length; i++) layoutObjects[i].display();
   for (var c = 0; c < cables.length; c++) cables[c].display();
   stroke(255);
@@ -91,14 +82,15 @@ function mouseDragged() {
               lineDrawingInProgress = true;
             }
           }
-          else console.log("already connected to something");
-          for (var c = 0; c < cables.length; c++) {
-            if (cables[c].firstObject == thing) {
-              cables[c].firstObject.connectedTo = null;
-              cables[c].secondObject.connectedBy = null;
-              delete cables[c];
-              cables.splice(c, 1);
-              return;
+          else {
+            for (var c = 0; c < cables.length; c++) {
+              if (cables[c].firstObject == thing) {
+                cables[c].firstObject.connectedTo = null;
+                cables[c].secondObject.connectedBy = null;
+                delete cables[c];
+                cables.splice(c, 1);
+                return;
+              }
             }
           }
         }
@@ -132,16 +124,6 @@ function mouseReleased() {
 }
 
 function addFixture(universeNumber) {
-  for (var u = 0; u < universes.length; u++) {
-    universe = universes[u];
-    if (universe.number == universeNumber) {
       universe.addFixture(new Fixture(universe.fixtures.length));
-      return;
-    }
   }
-}
-
-function addDMXController() {
-  dmxControllers.push(new DMXController(DMXControllerOptions[0], dmxControllers.length));
-}
 
