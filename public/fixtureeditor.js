@@ -1,6 +1,3 @@
-var DMXControllerOptions = ['dmxking-ultra-dmx-pro', 'enttec-usb-dmx-pro', 'enttec-open-usb-dmx', 'artnet', 'bbdmx', 'dmx4all'];
-var dmxController;
-var universe;
 var locked = false;
 var layoutObjects;
 var inProgressLineStartPointX = inProgressLineStartPointY = 0;
@@ -8,36 +5,6 @@ var inProgressLineEndPointX = inProgressLineEndPointY = 0;
 var lineDrawingInProgress = false;
 var firstConnectionInLine = null;
 var cables = [];
-var fixtureButton, saveRigButton, animationButton, liveModeButton;
-
-function setup() {
-  dmxController = new DMXController(DMXControllerOptions[0]);
-  universe = new Universe(0);
-  addUIButtons();
-  var canvas = createCanvas((windowWidth) / 1.02, (windowHeight) / 1.02);
-  canvas.style('display', 'block');
-  canvas.parent('fixture-editor'); 
-}
-
-function addUIButtons() {
-  fixtureButton = createButton('Add fixture');
-  fixtureButton.position(10, 30);
-  fixtureButton.mousePressed(() => addFixture(0));
-  saveRigButton = createButton('Save rig layout');
-  saveRigButton.position(10, 50);
-  saveRigButton.mousePressed(saveProject);  
-  animationButton = createButton('Animation editor');
-  animationButton.position(10, 70);
-  //animationButton.mousePressed(); 
-  liveModeButton = createButton('LIVE MODE');
-  liveModeButton.position(10, 90);
-  //liveModeButton.mousePressed();  
-}
-
-function draw() { 
-  background(0);
-  displayObjects();
-}
 
 /* Update fixture layout based on current state, this includes positions, colors, hovering, etc */
 function displayObjects() {
@@ -55,7 +22,7 @@ function displayObjects() {
   if (lineDrawingInProgress) line(inProgressLineStartPointX, inProgressLineStartPointY, mouseX, mouseY);
 }
 
-function mousePressed() {
+function mousePressedLayoutEditingMode() {
   for (let i = 0; i < layoutObjects.length; i++) {
     var thing = layoutObjects[i];
     if (thing.isHovered && thing.isHovered()) {
@@ -64,7 +31,7 @@ function mousePressed() {
   }
 }
 
-function mouseDragged() {
+function mouseDraggedLayoutEditingMode() {
   if (lineDrawingInProgress) {
     inProgressLineEndPointX = mouseX;
     inProgressLineEndPointY = mouseY;
@@ -99,7 +66,7 @@ function mouseDragged() {
   }
 }
 
-function mouseReleased() {
+function mouseReleasedLayoutEditingMode() {
   if (lineDrawingInProgress){
     for (let i = 0; i < layoutObjects.length; i++) {
       var thing = layoutObjects[i];
@@ -124,6 +91,6 @@ function mouseReleased() {
 }
 
 function addFixture(universeNumber) {
-      universe.addFixture(new Fixture(universe.fixtures.length));
-  }
+  universe.addFixture(new Fixture(universe.fixtures.length));
+}
 
