@@ -95,22 +95,32 @@ class RGBFixture extends Fixture {
 
           updateBrightnessChannelNumber(channelNumber) {
             this.brightnessChannel = channelNumber;
+            updateColor();
+            updateBrightness();
           }
 
           updateRedChannelNumber(channelNumber) {
             this.redChannel = channelNumber;
-          }          
+            updateColor();
+            updateBrightness();
+          }        
 
           updateGreenChannelNumber(channelNumber) {
             this.greenChannel = channelNumber;
-          } 
+            updateColor();
+            updateBrightness();
+          }
 
           updateBlueChannelNumber(channelNumber) {
             this.blueChannel = channelNumber;
-          } 
+            updateColor();
+            updateBrightness();
+          }
            
           updateWhiteChannelNumber(channelNumber) {
             this.whiteChannel = channelNumber;
-          }           
+            updateColor();
+            updateBrightness();
+          }          
 
 }
