@@ -24,8 +24,8 @@ io.on('connection', function(socket){
     var universeName = data['universeName'];
     var channels = data['channels'];
     if (dmx.universes[universeName]) {
-      dmx.universes[universeName] = new dmx.drivers[controllerType]('/dev/ttyUSB0');
-      universe = dmx.universes[universeName];
+      //dmx.universes[universeName] = new dmx.drivers[controllerType]('/dev/ttyUSB0');
+      //universe = dmx.universes[universeName];
     } else {
       universe = dmx.addUniverse(universeName, controllerType, '/dev/ttyUSB0'); // make usb port changable
     }
