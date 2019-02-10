@@ -39,10 +39,10 @@ class RGBFixture extends Fixture {
         this.brightnessChannelInput.position(this.x-this.size/4+65, this.y+this.size+124);
         this.brightnessChannelInput.changed(() => this.updateBrightnessChannelNumber(this.brightnesspicker.value()));    
         this.brightnessChannelInput.size(15);                                                   
-        this.channels[this.brightnessChannel].value = 255;
+        /*this.channels[this.brightnessChannel].value = 255;
         this.channels[this.redChannel].value = 255;
         this.channels[this.greenChannel].value = 0;
-        this.channels[this.blueChannel].value = 0;        
+        this.channels[this.blueChannel].value = 0;     */   
     }
 
     updateColor() {
@@ -51,14 +51,22 @@ class RGBFixture extends Fixture {
         this.r = rgbColor['r'];
         this.g = rgbColor['g'];
         this.b = rgbColor['b'];
-        this.channels[this.redChannel].value = this.r;
-        this.channels[this.greenChannel].value = this.g;
-        this.channels[this.blueChannel].value = this.b;
+        if (this.channels[this.redChannel]) {
+            this.channels[this.redChannel].value = this.r;
+        }
+        if (this.channels[this.greenChannel]) {
+            this.channels[this.greenChannel].value = this.g;
+        }
+        if (this.channels[this.blueChannel]) {
+            this.channels[this.blueChannel].value = this.b;
+        }
       }
     
       updateBrightness() { 
           this.brightness = this.brightnesspicker.value(); 
-          this.channels[this.brightnessChannel].value = this.brightness;
+            if (this.channels[this.brightnessChannel]) {
+                this.channels[this.brightnessChannel].value = this.brightness;
+            }
         }
 
         displayComponents() {
@@ -119,8 +127,8 @@ class RGBFixture extends Fixture {
            
           updateWhiteChannelNumber(channelNumber) {
             this.whiteChannel = channelNumber;
-            updateColor();
-            updateBrightness();
+            this.updateColor();
+            this.updateBrightness();
           }          
 
 }

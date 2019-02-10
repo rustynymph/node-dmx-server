@@ -3,11 +3,8 @@ class Fixture {
   constructor(number) {
     this.number = number
     this.name = 'Fixture' + this.number.toString();
-    this.numChannels = 8;
+    this.numChannels = null;
     this.channels = [];
-    for (var i = 0; i < 8; i++) {
-      this.channels.push(new Channel(i));
-    }
     this.size = 75;
     this.radius = this.size/2;
     this.x = universe.fixtures.length*50+200+this.size;   
@@ -24,7 +21,7 @@ class Fixture {
     this.nameInput.position(this.x/4, this.y+this.size-20);
     this.nameInput.changed(() => this.updateName());    
     this.nameInput.size(80);
-    this.channelsInput = createInput('8');
+    this.channelsInput = createInput(0);
     this.channelsInput.position(this.x/4, this.y+this.size)
     this.channelsInput.changed(() => this.updateChannelNumber());        
     this.channelsInput.size(15);                                                   
@@ -82,7 +79,13 @@ class Fixture {
   }  
 
   updateName() { this.name = this.nameInput.value(); }
-  updateChannelNumber() { this.numChannels = this.channelsInput.value(); }  
+  updateChannelNumber() { 
+      this.numChannels = this.channelsInput.value();
+      this.channels = [];
+      for (var i = 0; i < this.numChannels; i++) {
+        this.channels.push(new Channel(i));
+      }
+    }  
 }
 
 class FixtureIn {
