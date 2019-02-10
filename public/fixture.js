@@ -23,9 +23,11 @@ class Fixture {
     this.nameInput = createInput(this.name);
     this.nameInput.position(this.x/4, this.y+this.size-20);
     this.nameInput.changed(() => this.updateName());    
+    this.nameInput.size(80);
     this.channelsInput = createInput('8');
     this.channelsInput.position(this.x/4, this.y+this.size)
     this.channelsInput.changed(() => this.updateChannelNumber());        
+    this.channelsInput.size(15);                                                   
     this.in = new FixtureIn(this);  
     this.out = new FixtureOut(this);
     this.startingAddress = null;
@@ -41,7 +43,11 @@ class Fixture {
   displayComponents() {
     fill(0);
     ellipse(this.x, this.y, this.size, this.size);
-    this.nameInput.position(this.x-this.size/4, this.y+this.size-20);
+    fill(255);
+    stroke(0);
+    textSize(12);
+    text('name:', this.x-this.size/4, this.y+this.size-20);  
+    this.nameInput.position(this.x-this.size/4+50, this.y+this.size-20);
     this.channelsInput.position(this.x-this.size/4, this.y+this.size);
     this.in.display();
     this.out.display();
