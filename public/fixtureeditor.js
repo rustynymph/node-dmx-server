@@ -90,7 +90,12 @@ function mouseReleasedLayoutEditingMode() {
   }
 }
 
-function addFixture(universeNumber) {
-  universe.addFixture(new Fixture(universe.fixtures.length));
+function addFixture(universeNumber, fixtureType) {
+  console.log(fixtureType);
+  if (fixtureType == 'RGB Light') {
+    //universe.addFixture(new Fixture(universe.fixtures.length));
+    universe.addFixture(new RGBFixture(universe.fixtures.length));
+    console.log('test');
+  }
 }
 

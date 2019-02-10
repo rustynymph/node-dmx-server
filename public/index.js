@@ -1,9 +1,10 @@
 var socket = io();
 var mode = 0;
 var DMXControllerOptions = ['dmxking-ultra-dmx-pro', 'enttec-usb-dmx-pro', 'enttec-open-usb-dmx', 'artnet', 'bbdmx', 'dmx4all'];
+var fixtureOptions = ['RGB Light'];
 var dmxController;
 var universe;
-var fixtureButton, saveRigButton, animationButton, liveModeButton, uploadLayoutButton, layoutEditingModeButton;
+var fixtureButton, fixtureSelect, saveRigButton, animationButton, liveModeButton, uploadLayoutButton, layoutEditingModeButton;
 
 function setup() {
   dmxController = new DMXController(DMXControllerOptions[0]);
@@ -56,9 +57,14 @@ function liveControlMode() {
 }
 
 function addUIButtons() {
+  fixtureSelect = createSelect();
+  fixtureSelect.position(10, 30);
+  for (var f = 0; f < fixtureOptions.length; f++) {
+    fixtureSelect.option(fixtureOptions[f]);
+  }
   fixtureButton = createButton('Add fixture');
-  fixtureButton.position(10, 30);
-  fixtureButton.mousePressed(() => addFixture(0));    
+  fixtureButton.position(100, 30);
+  fixtureButton.mousePressed(() => addFixture(0, fixtureSelect.value()));    
   animationButton = createButton('Animation editor');
   animationButton.position(10, 70);
   animationButton.mousePressed(animationMode); 
@@ -69,6 +75,7 @@ function addUIButtons() {
   layoutEditingModeButton.position(10, 70);
   layoutEditingModeButton.mousePressed(layoutEditingMode);  
 
+  /*
   if (mode == 0) { // fixture editing mode
     fixtureButton = createButton('Add fixture');
     fixtureButton.position(10, 30);
@@ -101,6 +108,8 @@ function addUIButtons() {
     fixtureButton.remove();      
     liveModeButton.remove();      
   }
+*/
+
   uploadLayoutButton = createFileInput(handleFile);
   uploadLayoutButton.position(100, 10);  
   saveRigButton = createButton('Save layout');
