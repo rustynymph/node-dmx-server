@@ -94,7 +94,7 @@ class RGBFixture extends Fixture {
             text('green:', this.x-this.size/4, this.y+this.size+64);  
             text('blue:', this.x-this.size/4, this.y+this.size+84);  
             text('white:', this.x-this.size/4, this.y+this.size+104);  
-            text('master brightness:', this.x-this.size/4, this.y+this.size+124);  
+            text('brightness:', this.x-this.size/4, this.y+this.size+124);  
           }
 
           updateBrightnessChannelNumber(channelNumber) {
