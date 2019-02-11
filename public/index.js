@@ -71,9 +71,9 @@ function addUIButtons() {
   liveModeButton = createButton('LIVE MODE');
   liveModeButton.position(10, 90);
   liveModeButton.mousePressed(liveControlMode);
-  layoutEditingModeButton = createButton('Layout editor');
-  layoutEditingModeButton.position(10, 70);
-  layoutEditingModeButton.mousePressed(layoutEditingMode);  
+  //layoutEditingModeButton = createButton('Layout editor');
+  //layoutEditingModeButton.position(10, 70);
+  //layoutEditingModeButton.mousePressed(layoutEditingMode);  
 
   /*
   if (mode == 0) { // fixture editing mode
