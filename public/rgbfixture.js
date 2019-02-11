@@ -40,13 +40,20 @@ class RGBFixture extends Fixture {
         this.channels[this.blueChannel].value = 0;     */   
     }
 
+    updateColorToShowScene(color) {
+        this.color = color;
+        var rgbColor = hexToRgb(this.color);
+        this.r = rgbColor['r'];
+        this.g = rgbColor['g'];
+        this.b = rgbColor['b'];        
+    }
+
     updateColor() {
         this.color = this.colorpicker.value();
         var rgbColor = hexToRgb(this.color);
         this.r = rgbColor['r'];
         this.g = rgbColor['g'];
         this.b = rgbColor['b'];
-        console.log(this.channels);
         if (this.channels[this.redChannel-1]) {
             this.channels[this.redChannel-1].value = this.r;
         }
@@ -70,7 +77,11 @@ class RGBFixture extends Fixture {
             fill(this.r, this.g, this.b, this.brightness);
             ellipse(this.x, this.y, this.size, this.size);
             this.displayText();
-            this.nameInput.position(this.x-this.size/4+65, this.y+this.size-20);            
+            this.nameInput.position(this.x-this.size/4+65, this.y+this.size-20);    
+            
+            if (mode == 0) {
+                
+            }
             this.channelsInput.position(this.x-this.size/4+65, this.y+this.size);
             this.redChannelInput.position(this.x-this.size/4+65, this.y+this.size+44);
             this.greenChannelInput.position(this.x-this.size/4+65, this.y+this.size+64);

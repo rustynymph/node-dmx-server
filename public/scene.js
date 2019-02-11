@@ -1,5 +1,6 @@
 class Scene {
-    constructor(fixtureInfo) {
-
+    constructor(number, fixtureInfo) {
+        this.number = number;
+        this.fixtureInfo = fixtureInfo;
     }
 }

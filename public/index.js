@@ -7,6 +7,7 @@ var universe;
 var fixtureButton, fixtureSelect, saveRigButton, animationButton, liveModeButton, 
 uploadLayoutButton, layoutEditingModeButton, saveSceneButton, scenesElement, playPatternButton;
 var scenes = [];
+var sceneButtons = [];
 
 function setup() {
   dmxController = new DMXController(DMXControllerOptions[0]);
@@ -68,6 +69,11 @@ function layoutEditingMode() {
   mode = 0;
   addLayoutUIButtons();
   removeAnimationUIButtons();
+  for (var f = 0; f < universe.fixtures.length; f++) {
+    var fixture = universe.fixtures[f];
+    fixture.updateColor();
+    fixture.updateBrightness();
+  }
   //removeLiveControlUIButtons();
 }
 
@@ -136,6 +142,12 @@ function addAnimationUIButtons() {
   scenesElement.attribute('id', 'scenes-div');
   scenesElement.attribute('font-family', 'Arial, Helvetica, sans-serif');
 
+  for (var s = 0; s < sceneButtons.length; s++) {
+    var linebreak = document.createElement("br");
+    scenesElement['elt'].appendChild(linebreak);
+    scenesElement['elt'].appendChild(sceneButtons[s]['elt']);
+  }
+
   saveSceneButton = createButton('Save scene');
   saveSceneButton.position(width-330, 30);
   saveSceneButton.mousePressed(() => saveScene());      
@@ -151,8 +163,9 @@ function removeAnimationUIButtons() {
   playPatternButton.remove();
 }
 
+/* need to check and make sure rig is consistently connected and set up */
 function saveScene() {
-  var fixtureJson = {};
+  var fixtureStates = [];
   for (var f = 0; f < universe.fixtures.length; f++) {
     var fixture = universe.fixtures[f];
     var fixtureJson = {name: fixture.name, number: fixture.number, startingAddress: fixture.startingAddress,channels:[], positionX: fixture.x, 
@@ -162,11 +175,27 @@ function saveScene() {
           channel = fixture.channels[c];
           fixtureJson['channels'].push({name: channel.name, number: channel.number, value: channel.value});
       }
+      fixtureStates.push(fixtureJson);
   }
 
-  scenes.push(new Scene(fixtureJson));
-  var btn = document.createElement("BUTTON");
-  btn.innerHTML = 'Scene ' + scenes.length;
-  scenesElement['elt'].innerHTML = scenesElement['elt'].innerHTML + '<br>';
-  scenesElement['elt'].appendChild(btn);
+  var scene = new Scene(scenes.length, fixtureStates);
+  scenes.push(scene);
+  var btn = createButton('Scene ' + (scene.number+1).toString());
+  btn.mousePressed(() => showScene(scene));
+  sceneButtons.push(btn);
+  var linebreak = document.createElement("br");
+  scenesElement['elt'].appendChild(linebreak);
+  scenesElement['elt'].appendChild(btn['elt']);   
+}
+
+function showScene(scene) {
+  console.log(scene.number);
+  for (var f = 0; f < scene.fixtureInfo.length; f++) {
+    var fixtureSavedState = scene.fixtureInfo[f];
+    var fixture = universe.fixtures[f];
+    fixture.updateColorToShowScene(fixtureSavedState['color']);
+  }
+}
+
+function playPattern() {
 }
