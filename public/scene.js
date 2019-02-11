@@ -1,0 +1,5 @@
+class Scene {
+    constructor(fixtureInfo) {
+
+    }
+}

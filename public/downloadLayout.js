@@ -71,3 +71,8 @@ function download(data, filename, type) {
 function updateServer(dmxInfo) {  // send the server the updated rig information
     socket.emit('dmx-updated', dmxInfo);
 }
+
+/*
+ Eventually I will implement functions to take the layout and animations and turn them into makecode blocks,
+ then the makecode pi will take care of the node-dmx updating
+*/
