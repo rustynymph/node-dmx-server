@@ -40,6 +40,9 @@ io.on('connection', function(socket){
         var value = data[key]['value'];
         var time = data[key]['time'];
         animation.add({key: value}, time);
+        console.log(key);
+        console.log(value);
+        console.log(time);
       }
     }
     animations.push(animation);

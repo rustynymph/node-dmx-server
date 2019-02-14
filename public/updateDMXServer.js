@@ -86,5 +86,5 @@ function loopPatternDMX() {
 }
 
 function stopLoopingPatternDMX() {
-  socket.emit('stop-all-animations', dmxInfo);
+  socket.emit('stop-all-animations', {});
 }
