@@ -186,15 +186,15 @@ function createAndShowAnimationUIButtons() {
 function createAndShowLiveUIButtons() {
   playPatternDMX = createButton('Play pattern');
   playPatternDMX.position(10, 40);
-  playPatternDMX.mousePressed(playPatternDMX);    
+  playPatternDMX.mousePressed(() => {playPatternDMX()});    
 
   loopPatternDMX = createButton('Loop pattern');
   loopPatternDMX.position(10, 60);
-  loopPatternDMX.mousePressed(loopPatternDMX);   
+  loopPatternDMX.mousePressed(() => {loopPatternDMX()});   
 
   stopLoopingPatternDMX = createButton('Stop looping pattern');
   stopLoopingPatternDMX.position(10, 80);
-  stopLoopingPatternDMX.mousePressed(stopLoopingPatternDMX);     
+  stopLoopingPatternDMX.mousePressed(() => {stopLoopingPatternDMX()});     
 }
 
 function createAndShowUIButtons() {
