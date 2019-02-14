@@ -58,6 +58,7 @@ io.on('connection', function(socket){
     animation.add({2: 255, 3: 0, 4: 0}, 500);
     animation.add({2: 0, 3: 255, 4: 0}, 500);
     animation.add({2: 0, 3: 255, 4: 255}, 500);
+    animation.runLoop(universe);
     // future work, don't need to use this animation thing...can just set our own timeouts and intervals if necessary
     //setTimeout(() => {animation.stop()}, 5000); // stops the animation in 5 seconds
   });  
