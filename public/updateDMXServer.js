@@ -53,7 +53,7 @@ function playPatternDMX() {
 function loopPatternDMX() {
   updateLayout();
   var loopPatternJson = {};
-  var startingAddress = 1; // starting address of dmx controllers begin at 1, not 0
+  var startingAddress = 0; // use 0 instead of 1 here because we are not iterating by index and channel numbers are already correct
   var node = universe.dmxController.out.connectedTo.parent;
 
   while (node) {
