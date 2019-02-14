@@ -33,7 +33,9 @@ io.on('connection', function(socket){
 
   socket.on('run-animation', function (data) {
     console.log(data);
-    var animation = new DMX.Animation();
+
+
+    //var animation = new DMX.Animation();
     /*for (var key in data) { 
       if (data.hasOwnProperty(key)) {
         for (var i = 0; i < data[key].length; i++) {
@@ -54,13 +56,25 @@ io.on('connection', function(socket){
       animations[a].runLoop(universe);
     }*/
 
-    dmx.update(universeName, {1: 255, 2: 0, 3: 0, 4: 0, 5: 0});
+
+    /*dmx.update(universeName, {1: 255, 2: 0, 3: 0, 4: 0, 5: 0});
     animation.add({2: 255, 3: 0, 4: 0}, 500);
     animation.add({2: 0, 3: 255, 4: 0}, 500);
     animation.add({2: 0, 3: 255, 4: 255}, 500);
-    animation.runLoop(universe);
-    // future work, don't need to use this animation thing...can just set our own timeouts and intervals if necessary
-    //setTimeout(() => {animation.stop()}, 5000); // stops the animation in 5 seconds
+    animation.runLoop(universe);*/
+
+    var waittime = 0;
+    for (var key in data) { 
+      if (data.hasOwnProperty(key)) {
+        var sceneData = data[key];
+        var channelsData = sceneData['channelData'];
+        var timeData = parseInt(sceneData['time']);
+        setTimeout(() => {dmx.update(universeName, channelsData)}, waittime);
+        waittime += timeData;
+      }
+    }
+
+
   });  
 
   socket.on('stop-all-animations', function (data) {

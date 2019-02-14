@@ -52,7 +52,7 @@ function playPatternDMX() {
 
 function loopPatternDMX() {
   updateLayout();
-  var loopPatternJson = {};
+  /*var loopPatternJson = {};
   var startingAddress = 0; // use 0 instead of 1 here because we are not iterating by index and channel numbers are already correct
   var node = universe.dmxController.out.connectedTo.parent;
 
@@ -82,7 +82,34 @@ function loopPatternDMX() {
       }
   }
   console.log(loopPatternJson);
-  runAnimation(loopPatternJson);
+  runAnimation(loopPatternJson);*/
+
+  var patternJson = {};
+  var startingAddress = 1;
+  while (node) {
+    node.startingAddress = startingAddress;
+    var nodeName = node.name;
+    for (var s = 0; s < pattern.scenes.length; s++) {
+      var scene = pattern.scenes[s];
+      channels = {};
+      for (var f = 0; f < scene.fixtureInfo.length; f++) {
+        var fixture = scene.fixtureInfo[f];
+        if (nodeName == fixture.name) { // need to fix later for arbitrary channel values
+          for (var c = 0; c < fixture['channels'].length; c++) { // get channel info per fixture per scene
+            channels[c + startingAddress] = fixture['channels'][c].value;
+            startingAddress++;
+          }
+        }
+      }
+      patternJson[s] = {channelData: channels, time: scene.length};
+    }
+    if (node.out && node.out.connectedTo && node.out.connectedTo.parent) {
+        node = node.out.connectedTo.parent;
+    } else {
+        node = null;
+    }
+  }
+  runAnimation(patternJson);  
 }
 
 function stopLoopingPatternDMX() {
