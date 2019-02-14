@@ -61,7 +61,7 @@ function loopPatternDMX() {
       node.startingAddress = startingAddress;
       var nodeName = node.name;
       for (var s = 0; s < pattern.scenes.length; s++) {
-        var scene = pattern.scenes.length[s];
+        var scene = pattern.scenes[s];
         console.log("scene: " + scene);
         for (var f = 0; f < scene.fixtureInfo.length; f++) {
           //console.log("scene: " + scene);
