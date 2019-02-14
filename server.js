@@ -37,12 +37,16 @@ io.on('connection', function(socket){
 
     for (var key in data) {
       if (data.hasOwnProperty(key)) {
-        var value = data[key]['value'];
-        var time = data[key]['time'];
-        animation.add({key: value}, time);
-        console.log(key);
-        console.log(value);
-        console.log(time);
+        for (var i = 0; i < data[key].length; i++) {
+          var info = data[key][i];
+          var value = info['value'];
+          var time = info['time']; 
+          if (key && value && time)
+            animation.add({key: value}, time);
+          console.log(key);
+          console.log(value);
+          console.log(time);                   
+        }
       }
     }
     animations.push(animation);
