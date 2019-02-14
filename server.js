@@ -33,25 +33,27 @@ io.on('connection', function(socket){
 
   socket.on('run-animation', function (data) {
     console.log(data);
-    var animation = new DMX.Animation();
 
     for (var key in data) {
       if (data.hasOwnProperty(key)) {
         for (var i = 0; i < data[key].length; i++) {
+          var animation = new DMX.Animation();
           var info = data[key][i];
           var value = info['value'];
           var time = info['time']; 
           if (key && value && time)
             animation.add({key: value}, time);
+            animations.push(animation);
           console.log(key);
           console.log(value);
           console.log(time);                   
         }
       }
     }
-    animations.push(animation);
-    animation.runLoop(universe);
 
+    for (var a = 0; a < animations.length; a++) {
+      animations[a].runLoop(universe);
+    }
     // future work, don't need to use this animation thing...can just set our own timeouts and intervals if necessary
     //setTimeout(() => {animation.stop()}, 5000); // stops the animation in 5 seconds
   });  
