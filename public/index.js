@@ -5,7 +5,7 @@ var DMXControllerOptions = ['dmxking-ultra-dmx-pro', 'enttec-usb-dmx-pro', 'entt
 var fixtureOptions = ['RGB Light'];
 var fixtureButton, fixtureSelect, saveRigButton, animationButton, liveModeButton, 
 uploadLayoutButton, layoutEditingModeButton, saveSceneButton, scenesElement, playPatternButton,
-playPatternDMX, loopPatternDMX, stopLoopingPatternDMX;
+playPatternDMXButton, loopPatternDMXButton, stopLoopingPatternDMXButton;
 var selectedModeHighlightX = 0;
 var pattern; // change this later
 
@@ -115,15 +115,15 @@ function hideAnimationUIButtons() {
 }
 
 function showLiveUIButtons() {
-  playPatternDMX.show();
-  loopPatternDMX.show();
-  stopLoopingPatternDMX.show();
+  playPatternDMXButton.show();
+  loopPatternDMXButton.show();
+  stopLoopingPatternDMXButton.show();
 }
 
 function hideLiveUIButtons() {
-  playPatternDMX.hide();
-  loopPatternDMX.hide();
-  stopLoopingPatternDMX.hide();  
+  playPatternDMXButton.hide();
+  loopPatternDMXButton.hide();
+  stopLoopingPatternDMXButton.hide();  
 }
 
 function createAndShowLayoutUIButtons() {
@@ -135,7 +135,6 @@ function createAndShowLayoutUIButtons() {
   fixtureButton = createButton('Add fixture');
   fixtureButton.position(100, 40);
   fixtureButton.mousePressed(() => addFixture(0, fixtureSelect.value()));    
-
   saveRigButton = createButton('Download project');
   saveRigButton.position(10, 60);
   saveRigButton.mousePressed(saveProject);    
@@ -163,15 +162,12 @@ function createAndShowAnimationUIButtons() {
   saveSceneButton = createButton('Save scene');
   saveSceneButton.position(width-330, 30);
   saveSceneButton.mousePressed(() => pattern.saveScene());      
-
   playPatternButton = createButton('Play pattern');
   playPatternButton.position(width-330, 50);
   playPatternButton.mousePressed(() => pattern.play());   
-
   loopPatternButton = createButton('Loop pattern');
   loopPatternButton.position(width-330, 70);
   loopPatternButton.mousePressed(() => pattern.loop());   
-  
   stopLoopingPatternButton = createButton('Stop looping pattern');
   stopLoopingPatternButton.position(width-330, 90);
   stopLoopingPatternButton.mousePressed(() => pattern.stopLooping());
@@ -184,17 +180,15 @@ function createAndShowAnimationUIButtons() {
 }
 
 function createAndShowLiveUIButtons() {
-  playPatternDMX = createButton('Play pattern');
-  playPatternDMX.position(10, 40);
-  playPatternDMX.mousePressed(playPatternDMX);    
-
-  loopPatternDMX = createButton('Loop pattern');
-  loopPatternDMX.position(10, 60);
-  loopPatternDMX.mousePressed(loopPatternDMX);   
-
-  stopLoopingPatternDMX = createButton('Stop looping pattern');
-  stopLoopingPatternDMX.position(10, 80);
-  stopLoopingPatternDMX.mousePressed(stopLoopingPatternDMX);     
+  playPatternDMXButton = createButton('Play pattern');
+  playPatternDMXButton.position(10, 40);
+  playPatternDMXButton.mousePressed(playPatternDMX);    
+  loopPatternDMXButton = createButton('Loop pattern');
+  loopPatternDMXButton.position(10, 60);
+  loopPatternDMXButton.mousePressed(loopPatternDMX);   
+  stopLoopingPatternDMXButton = createButton('Stop looping pattern');
+  stopLoopingPatternDMXButton.position(10, 80);
+  stopLoopingPatternDMXButton.mousePressed(stopLoopingPatternDMX);     
 }
 
 function createAndShowUIButtons() {
@@ -202,17 +196,14 @@ function createAndShowUIButtons() {
   animationButton.position(510, 10);
   animationButton.mousePressed(animationMode); 
   animationButton.size(250);
-  
   liveModeButton = createButton('LIVE MODE');
   liveModeButton.position(260, 10);
   liveModeButton.mousePressed(liveControlMode);
   liveModeButton.size(250);
-
   layoutEditingModeButton = createButton('Layout editor');
   layoutEditingModeButton.position(10, 10);
   layoutEditingModeButton.mousePressed(layoutEditingMode);  
   layoutEditingModeButton.size(250);
-
   uploadLayoutButton = createFileInput(handleFile);
   uploadLayoutButton.position(850, 10);  
 }
