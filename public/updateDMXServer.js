@@ -80,9 +80,7 @@ function loopPatternDMX() {
           node = null;
       }
   }
-  //console.log(channelsList);
-  return channelsList;
-
+  runAnimation(loopPatternJson);
 }
 
 function stopLoopingPatternDMX() {

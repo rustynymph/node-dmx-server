@@ -32,9 +32,10 @@ io.on('connection', function(socket){
   });
 
   socket.on('run-animation', function (data) {
-    var animation = new DMX.Animation().add({1: 255}, 100).add({1: 0}, 100).runLoop(universe); // animation will run forever unless stopped
+    //var animation = new DMX.Animation().add({1: 255}, 100).add({1: 0}, 100).runLoop(universe); // animation will run forever unless stopped
     // future work, don't need to use this animation thing...can just set our own timeouts and intervals if necessary
     //setTimeout(() => {animation.stop()}, 5000); // stops the animation in 5 seconds
+    console.log(data);
   });  
 
   socket.on('stop-all-animations', function (data) {
