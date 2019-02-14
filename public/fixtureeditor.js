@@ -91,11 +91,8 @@ function mouseReleasedLayoutEditingMode() {
 }
 
 function addFixture(universeNumber, fixtureType) {
-  console.log(fixtureType);
   if (fixtureType == 'RGB Light') {
-    //universe.addFixture(new Fixture(universe.fixtures.length));
     universe.addFixture(new RGBFixture(universe.fixtures.length));
-    console.log('test');
   }
 }
 
