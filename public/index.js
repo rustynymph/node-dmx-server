@@ -3,22 +3,21 @@ var mode = 0;
 var universe;
 var DMXControllerOptions = ['dmxking-ultra-dmx-pro', 'enttec-usb-dmx-pro', 'enttec-open-usb-dmx', 'artnet', 'bbdmx', 'dmx4all'];
 var fixtureOptions = ['RGB Light'];
-//var dmxController;
 var fixtureButton, fixtureSelect, saveRigButton, animationButton, liveModeButton, 
 uploadLayoutButton, layoutEditingModeButton, saveSceneButton, scenesElement, playPatternButton;
-var selectedModeHighlightX;
+var selectedModeHighlightX = 0;
 var pattern; // change this later
 
 function setup() {
   universe = new Universe(0);
   pattern = new Pattern();
-  //dmxController = universe.dmxController;
-  addUIButtons();
   var canvas = createCanvas((windowWidth) / 1.02, (windowHeight) / 1.02);
   canvas.style('display', 'block');
   canvas.parent('fixture-editor'); 
-  addUIButtons();
-  addLayoutUIButtons();
+  createAndShowUIButtons();
+  createAndShowLayoutUIButtons();
+  createAndShowAnimationUIButtons();
+  //createLiveUIButtons();
 }
 
 function draw() { 
@@ -57,53 +56,61 @@ function mouseReleased() {
 function layoutEditingMode() {
   mode = 0;
   selectedModeHighlightX = 0;
-  addLayoutUIButtons();
-  removeAnimationUIButtons();
+  showLayoutUIButtons();
+  hideAnimationUIButtons();
   for (var f = 0; f < universe.fixtures.length; f++) {
     var fixture = universe.fixtures[f];
     fixture.updateColor();
     fixture.updateBrightness();
   }
-  //removeLiveControlUIButtons();
+  //hideLiveControlUIButtons();
 }
 
 function animationMode() {
   mode = 1;
   selectedModeHighlightX = 500;
-  addAnimationUIButtons();
-  removeLayoutUIButtons();
-  //removeLiveControlUIButtons();
+  showAnimationUIButtons();
+  hideLayoutUIButtons();
+  //hideLiveControlUIButtons();
 }
 
 function liveControlMode() {
   mode = 2;
   selectedModeHighlightX = 250;
-  //addLiveControlUIButtons();
-  removeLayoutUIButtons();
-  removeAnimationUIButtons();
+  //showLiveControlUIButtons();
+  hideLayoutUIButtons();
+  hideAnimationUIButtons();
 }
 
-function addUIButtons() {
-  animationButton = createButton('Animation editor');
-  animationButton.position(510, 10);
-  animationButton.mousePressed(animationMode); 
-  animationButton.size(250);
-  
-  liveModeButton = createButton('LIVE MODE');
-  liveModeButton.position(260, 10);
-  liveModeButton.mousePressed(liveControlMode);
-  liveModeButton.size(250);
-
-  layoutEditingModeButton = createButton('Layout editor');
-  layoutEditingModeButton.position(10, 10);
-  layoutEditingModeButton.mousePressed(layoutEditingMode);  
-  layoutEditingModeButton.size(250);
-
-  uploadLayoutButton = createFileInput(handleFile);
-  uploadLayoutButton.position(850, 10);  
+function showLayoutUIButtons() {
+  fixtureSelect.show();
+  fixtureButton.show();
+  saveRigButton.show();  
 }
 
-function addLayoutUIButtons() {
+function hideLayoutUIButtons() {
+  fixtureSelect.hide();
+  fixtureButton.hide();
+  saveRigButton.hide();
+}
+
+function showAnimationUIButtons() {
+  saveSceneButton.show();
+  scenesElement.show();
+  playPatternButton.show();
+  loopPatternButton.show();
+  stopLoopingPatternButton.show();  
+}
+
+function hideAnimationUIButtons() {
+  saveSceneButton.hide();
+  scenesElement.hide();
+  playPatternButton.hide();
+  loopPatternButton.hide();
+  stopLoopingPatternButton.hide();
+}
+
+function createAndShowLayoutUIButtons() {
   fixtureSelect = createSelect();
   fixtureSelect.position(10, 40);
   for (var f = 0; f < fixtureOptions.length; f++) {
@@ -118,13 +125,7 @@ function addLayoutUIButtons() {
   saveRigButton.mousePressed(saveProject);    
 }
 
-function removeLayoutUIButtons() {
-  fixtureSelect.remove();
-  fixtureButton.remove();
-  saveRigButton.remove();
-}
-
-function addAnimationUIButtons() {
+function createAndShowAnimationUIButtons() {
   scenesElement = createDiv('Scenes');
   scenesElement.size(250, height-20);
   scenesElement.position(width-250, 28);
@@ -166,9 +167,22 @@ function addAnimationUIButtons() {
   }
 }
 
-function removeAnimationUIButtons() {
-  saveSceneButton.remove();
-  scenesElement.remove();
-  playPatternButton.remove();
-}
+function createAndShowUIButtons() {
+  animationButton = createButton('Animation editor');
+  animationButton.position(510, 10);
+  animationButton.mousePressed(animationMode); 
+  animationButton.size(250);
+  
+  liveModeButton = createButton('LIVE MODE');
+  liveModeButton.position(260, 10);
+  liveModeButton.mousePressed(liveControlMode);
+  liveModeButton.size(250);
 
+  layoutEditingModeButton = createButton('Layout editor');
+  layoutEditingModeButton.position(10, 10);
+  layoutEditingModeButton.mousePressed(layoutEditingMode);  
+  layoutEditingModeButton.size(250);
+
+  uploadLayoutButton = createFileInput(handleFile);
+  uploadLayoutButton.position(850, 10);  
+}
