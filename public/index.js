@@ -1,17 +1,18 @@
 var socket = io();
 var mode = 0;
+var universe;
 var DMXControllerOptions = ['dmxking-ultra-dmx-pro', 'enttec-usb-dmx-pro', 'enttec-open-usb-dmx', 'artnet', 'bbdmx', 'dmx4all'];
 var fixtureOptions = ['RGB Light'];
-var dmxController;
-var universe;
+//var dmxController;
 var fixtureButton, fixtureSelect, saveRigButton, animationButton, liveModeButton, 
 uploadLayoutButton, layoutEditingModeButton, saveSceneButton, scenesElement, playPatternButton;
-var scenes = [];
-var sceneButtons = [];
+var selectedModeHighlightX;
+var pattern; // change this later
 
 function setup() {
-  dmxController = new DMXController(DMXControllerOptions[0]);
   universe = new Universe(0);
+  pattern = new Pattern();
+  //dmxController = universe.dmxController;
   addUIButtons();
   var canvas = createCanvas((windowWidth) / 1.02, (windowHeight) / 1.02);
   canvas.style('display', 'block');
@@ -30,21 +31,9 @@ function draw() {
   stroke(255);
   textSize(12);
   text('upload project', 760, 15);  
-  if (mode == 0) { // layout/rig editing mode
-    fill(167, 0, 255);
-    stroke(0);
-    rect(0, 20, 250, 5);
-  }
-  if (mode == 1) { // animation editing mode
-    fill(167, 0, 255);
-    stroke(0);
-    rect(500, 20, 250, 5);
-  }     
-  if (mode == 2) { // live control mode
-    fill(167, 0, 255);
-    stroke(0);
-    rect(250, 20, 250, 5);
-  } 
+  fill(167, 0, 255);
+  stroke(0);
+  rect(selectedModeHighlightX, 20, 250, 5); 
 }
 
 function mousePressed() {
@@ -67,6 +56,7 @@ function mouseReleased() {
 
 function layoutEditingMode() {
   mode = 0;
+  selectedModeHighlightX = 0;
   addLayoutUIButtons();
   removeAnimationUIButtons();
   for (var f = 0; f < universe.fixtures.length; f++) {
@@ -79,6 +69,7 @@ function layoutEditingMode() {
 
 function animationMode() {
   mode = 1;
+  selectedModeHighlightX = 500;
   addAnimationUIButtons();
   removeLayoutUIButtons();
   //removeLiveControlUIButtons();
@@ -86,6 +77,7 @@ function animationMode() {
 
 function liveControlMode() {
   mode = 2;
+  selectedModeHighlightX = 250;
   //addLiveControlUIButtons();
   removeLayoutUIButtons();
   removeAnimationUIButtons();
@@ -142,19 +134,36 @@ function addAnimationUIButtons() {
   scenesElement.attribute('id', 'scenes-div');
   scenesElement.attribute('font-family', 'Arial, Helvetica, sans-serif');
 
-  for (var s = 0; s < sceneButtons.length; s++) {
+  for (var s = 0; s < pattern.sceneButtons.length; s++) {
     var linebreak = document.createElement("br");
+    var msTextNode = document.createTextNode("ms");
     scenesElement['elt'].appendChild(linebreak);
-    scenesElement['elt'].appendChild(sceneButtons[s]['elt']);
+    scenesElement['elt'].appendChild(pattern.sceneButtons[s]['elt']);   
+    scenesElement['elt'].appendChild(pattern.timeInputs[s]['elt']);   
+    scenesElement['elt'].appendChild(msTextNode);     
   }
 
   saveSceneButton = createButton('Save scene');
   saveSceneButton.position(width-330, 30);
-  saveSceneButton.mousePressed(() => saveScene());      
+  saveSceneButton.mousePressed(() => pattern.saveScene());      
 
   playPatternButton = createButton('Play pattern');
   playPatternButton.position(width-330, 50);
-  playPatternButton.mousePressed(() => playPattern());       
+  playPatternButton.mousePressed(() => pattern.play());   
+
+  loopPatternButton = createButton('Loop pattern');
+  loopPatternButton.position(width-330, 70);
+  loopPatternButton.mousePressed(() => pattern.loop());   
+  
+  stopLoopingPatternButton = createButton('Stop looping pattern');
+  stopLoopingPatternButton.position(width-330, 90);
+  stopLoopingPatternButton.mousePressed(() => pattern.stopLooping());     
+  
+  for (var i = 0; i < universe.fixtures.length; i++) {
+    var fixture = universe.fixtures[i];
+    fixture.animationcolorpicker.value(fixture.color);
+    fixture.animationbrightnesspicker.value(fixture.brightness);
+  }
 }
 
 function removeAnimationUIButtons() {
@@ -163,39 +172,3 @@ function removeAnimationUIButtons() {
   playPatternButton.remove();
 }
 
-/* need to check and make sure rig is consistently connected and set up */
-function saveScene() {
-  var fixtureStates = [];
-  for (var f = 0; f < universe.fixtures.length; f++) {
-    var fixture = universe.fixtures[f];
-    var fixtureJson = {name: fixture.name, number: fixture.number, startingAddress: fixture.startingAddress,channels:[], positionX: fixture.x, 
-      positionY: fixture.y, color: fixture.color, brightness: fixture.brightness, size: fixture.size, connectedTo: fixture.connectedTo,
-       connectedBy: fixture.connectedBy};
-      for (var c = 0; c < fixture.channels.length; c++) {
-          channel = fixture.channels[c];
-          fixtureJson['channels'].push({name: channel.name, number: channel.number, value: channel.value});
-      }
-      fixtureStates.push(fixtureJson);
-  }
-
-  var scene = new Scene(scenes.length, fixtureStates);
-  scenes.push(scene);
-  var btn = createButton('Scene ' + (scene.number+1).toString());
-  btn.mousePressed(() => showScene(scene));
-  sceneButtons.push(btn);
-  var linebreak = document.createElement("br");
-  scenesElement['elt'].appendChild(linebreak);
-  scenesElement['elt'].appendChild(btn['elt']);   
-}
-
-function showScene(scene) {
-  console.log(scene.number);
-  for (var f = 0; f < scene.fixtureInfo.length; f++) {
-    var fixtureSavedState = scene.fixtureInfo[f];
-    var fixture = universe.fixtures[f];
-    fixture.updateColorToShowScene(fixtureSavedState['color']);
-  }
-}
-
-function playPattern() {
-}

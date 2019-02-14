@@ -1,14 +1,14 @@
-var locked = false;
+var locked = false; 
 var layoutObjects;
 var inProgressLineStartPointX = inProgressLineStartPointY = 0;
-var inProgressLineEndPointX = inProgressLineEndPointY = 0;
+var inProgressLineEndPointX   = inProgressLineEndPointY   = 0;
 var lineDrawingInProgress = false;
 var firstConnectionInLine = null;
 var cables = [];
 
 /* Update fixture layout based on current state, this includes positions, colors, hovering, etc */
 function displayObjects() {
-  layoutObjects = [dmxController, dmxController.out];
+  layoutObjects = [universe.dmxController, universe.dmxController.out];
   // at some point universes should be children of dmx controllers
     for (let f = 0; f < universe.fixtures.length; f++){
       var fixture = universe.fixtures[f];

@@ -1,7 +1,7 @@
 function generateOrderedChannelsList() {
     var channelsList = {};
     var startingAddress = 1; // starting address of dmx controllers begin at 1, not 0
-    var node = dmxController.out.connectedTo.parent;
+    var node = universe.dmxController.out.connectedTo.parent;
     while (node) {
         node.startingAddress = startingAddress;
         for (var c = 0; c < node.channels.length; c++) {
@@ -19,12 +19,12 @@ function generateOrderedChannelsList() {
 }
 
 function dmxInfoToJson(allChannels) {
-    return {dmxControllerType: dmxController.type, universeName: universe.name, channels: allChannels};
+    return {dmxControllerType: universe.dmxController.type, universeName: universe.name, channels: allChannels};
 }
 
 function layoutToJson() {
-    var layout = {dmxControllers: [{type: dmxController.type, number: dmxController.number,
-                     positionX: dmxController.x,  positionY: dmxController.y, universes: []}],
+    var layout = {dmxControllers: [{type: universe.dmxController.type, number: universe.dmxController.number,
+                     positionX: universe.dmxController.x,  positionY: universe.dmxController.y, universes: []}],
                   universes: [{name: universe.name, number: universe.number, fixtures: []}]};
     for (var f = 0; f < universe.fixtures.length; f++){
         fixture = universe.fixtures[f];
