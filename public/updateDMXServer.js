@@ -55,7 +55,9 @@ function loopPatternDMX() {
   var loopPatternJson = {};
   var startingAddress = 1; // starting address of dmx controllers begin at 1, not 0
   var node = universe.dmxController.out.connectedTo.parent;
+
   while (node) {
+      console.log("node: " + node);
       node.startingAddress = startingAddress;
       var nodeName = node.name;
       for (var s = 0; s < pattern.scenes.length; s++) {
