@@ -1,27 +1,3 @@
-function generateOrderedChannelsList() {
-    var channelsList = {};
-    var startingAddress = 1; // starting address of dmx controllers begin at 1, not 0
-    var node = universe.dmxController.out.connectedTo.parent;
-    while (node) {
-        node.startingAddress = startingAddress;
-        for (var c = 0; c < node.channels.length; c++) {
-            channelsList[startingAddress + c] = node.channels[c].value;
-        }
-        startingAddress = startingAddress + node.channels.length;
-        if (node.out && node.out.connectedTo && node.out.connectedTo.parent) {
-            node = node.out.connectedTo.parent;
-        } else {
-            node = null;
-        }
-    }
-    console.log(channelsList);
-    return channelsList;
-}
-
-function dmxInfoToJson(allChannels) {
-    return {dmxControllerType: universe.dmxController.type, universeName: universe.name, channels: allChannels};
-}
-
 function layoutToJson() {
     var layout = {dmxControllers: [{type: universe.dmxController.type, number: universe.dmxController.number,
                      positionX: universe.dmxController.x,  positionY: universe.dmxController.y, universes: []}],
@@ -40,9 +16,6 @@ function layoutToJson() {
 }
 
 function saveProject() {
-    var channelsList = generateOrderedChannelsList();
-    var dmxInfo = dmxInfoToJson(channelsList);
-    updateServer(dmxInfo);
     var layout = layoutToJson();
     stringifiedLayout = JSON.stringify(layout);
     var d = new Date();
@@ -67,12 +40,3 @@ function download(data, filename, type) {
         }, 0); 
     }
 }
-
-function updateServer(dmxInfo) {  // send the server the updated rig information
-    socket.emit('dmx-updated', dmxInfo);
-}
-
-/*
- Eventually I will implement functions to take the layout and animations and turn them into makecode blocks,
- then the makecode pi will take care of the node-dmx updating
-*/

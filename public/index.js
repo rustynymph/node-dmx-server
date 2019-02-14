@@ -4,7 +4,8 @@ var universe;
 var DMXControllerOptions = ['dmxking-ultra-dmx-pro', 'enttec-usb-dmx-pro', 'enttec-open-usb-dmx', 'artnet', 'bbdmx', 'dmx4all'];
 var fixtureOptions = ['RGB Light'];
 var fixtureButton, fixtureSelect, saveRigButton, animationButton, liveModeButton, 
-uploadLayoutButton, layoutEditingModeButton, saveSceneButton, scenesElement, playPatternButton;
+uploadLayoutButton, layoutEditingModeButton, saveSceneButton, scenesElement, playPatternButton,
+playPatternDMX, loopPatternDMX, stopLoopingPatternDMX;
 var selectedModeHighlightX = 0;
 var pattern; // change this later
 
@@ -17,7 +18,9 @@ function setup() {
   createAndShowUIButtons();
   createAndShowLayoutUIButtons();
   createAndShowAnimationUIButtons();
-  //createLiveUIButtons();
+  createAndShowLiveUIButtons();
+  hideAnimationUIButtons();
+  hideLiveUIButtons();  
 }
 
 function draw() { 
@@ -58,12 +61,12 @@ function layoutEditingMode() {
   selectedModeHighlightX = 0;
   showLayoutUIButtons();
   hideAnimationUIButtons();
+  hideLiveUIButtons();
   for (var f = 0; f < universe.fixtures.length; f++) {
     var fixture = universe.fixtures[f];
     fixture.updateColor();
     fixture.updateBrightness();
   }
-  //hideLiveControlUIButtons();
 }
 
 function animationMode() {
@@ -71,13 +74,14 @@ function animationMode() {
   selectedModeHighlightX = 500;
   showAnimationUIButtons();
   hideLayoutUIButtons();
-  //hideLiveControlUIButtons();
+  hideLiveUIButtons();
 }
 
 function liveControlMode() {
   mode = 2;
   selectedModeHighlightX = 250;
-  //showLiveControlUIButtons();
+  showLiveUIButtons
+  showLiveUIButtons();
   hideLayoutUIButtons();
   hideAnimationUIButtons();
 }
@@ -110,6 +114,18 @@ function hideAnimationUIButtons() {
   stopLoopingPatternButton.hide();
 }
 
+function showLiveUIButtons() {
+  playPatternDMX.show();
+  loopPatternDMX.show();
+  stopLoopingPatternDMX.show();
+}
+
+function hideLiveUIButtons() {
+  playPatternDMX.hide();
+  loopPatternDMX.hide();
+  stopLoopingPatternDMX.hide();  
+}
+
 function createAndShowLayoutUIButtons() {
   fixtureSelect = createSelect();
   fixtureSelect.position(10, 40);
@@ -120,7 +136,7 @@ function createAndShowLayoutUIButtons() {
   fixtureButton.position(100, 40);
   fixtureButton.mousePressed(() => addFixture(0, fixtureSelect.value()));    
 
-  saveRigButton = createButton('Save layout');
+  saveRigButton = createButton('Download project');
   saveRigButton.position(10, 60);
   saveRigButton.mousePressed(saveProject);    
 }
@@ -158,13 +174,27 @@ function createAndShowAnimationUIButtons() {
   
   stopLoopingPatternButton = createButton('Stop looping pattern');
   stopLoopingPatternButton.position(width-330, 90);
-  stopLoopingPatternButton.mousePressed(() => pattern.stopLooping());     
+  stopLoopingPatternButton.mousePressed(() => pattern.stopLooping());
   
   for (var i = 0; i < universe.fixtures.length; i++) {
     var fixture = universe.fixtures[i];
     fixture.animationcolorpicker.value(fixture.color);
     fixture.animationbrightnesspicker.value(fixture.brightness);
   }
+}
+
+function createAndShowLiveUIButtons() {
+  playPatternDMX = createButton('Play pattern');
+  playPatternDMX.position(10, 40);
+  playPatternDMX.mousePressed(playPatternDMX);    
+
+  loopPatternDMX = createButton('Loop pattern');
+  loopPatternDMX.position(10, 60);
+  loopPatternDMX.mousePressed(loopPatternDMX);   
+
+  stopLoopingPatternDMX = createButton('Stop looping pattern');
+  stopLoopingPatternDMX.position(10, 80);
+  stopLoopingPatternDMX.mousePressed(stopLoopingPatternDMX);     
 }
 
 function createAndShowUIButtons() {
