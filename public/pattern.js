@@ -18,7 +18,7 @@ class Pattern {
         positionY: fixture.y, color: fixture.color, brightness: fixture.brightness, size: fixture.size, connectedTo: fixture.connectedTo,
             connectedBy: fixture.connectedBy};
         for (var c = 0; c < fixture.channels.length; c++) {
-            channel = fixture.channels[c];
+            var channel = fixture.channels[c];
             fixtureJson['channels'].push({name: channel.name, number: channel.number, value: channel.value});
         }
       scene.fixtureInfo.push(fixtureJson);
