@@ -85,12 +85,14 @@ function loopPatternDMX() {
   runAnimation(loopPatternJson);*/
 
   var patternJson = {};
-  var startingAddress = 1;
   var node = universe.dmxController.out.connectedTo.parent;
   while (node) {
-    node.startingAddress = startingAddress;
+    //var startingAddress = 1;
+    //node.startingAddress = startingAddress;
     var nodeName = node.name;
     for (var s = 0; s < pattern.scenes.length; s++) {
+      var startingAddress = 1;
+      node.startingAddress = startingAddress;
       var scene = pattern.scenes[s];
       channels = {};
       for (var f = 0; f < scene.fixtureInfo.length; f++) {

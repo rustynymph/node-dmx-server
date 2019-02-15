@@ -34,7 +34,6 @@ io.on('connection', function(socket){
   socket.on('run-animation', function (data) {
     console.log(data);
 
-
     //var animation = new DMX.Animation();
     /*for (var key in data) { 
       if (data.hasOwnProperty(key)) {
@@ -51,12 +50,9 @@ io.on('connection', function(socket){
         }
       }
     }
-
     for (var a = 0; a < animations.length; a++) {
       animations[a].runLoop(universe);
     }*/
-
-
     /*dmx.update(universeName, {1: 255, 2: 0, 3: 0, 4: 0, 5: 0});
     animation.add({2: 255, 3: 0, 4: 0}, 500);
     animation.add({2: 0, 3: 255, 4: 0}, 500);
