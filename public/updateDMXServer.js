@@ -7,6 +7,10 @@ function runAnimation(dmxInfo) {
     socket.emit('run-animation', dmxInfo);
 }
 
+function loopAnimation(dmxInfo) {
+  socket.emit('loop-animation', dmxInfo);
+}
+
 function updateServer(dmxInfo) {  // send the server the updated rig information
     socket.emit('dmx-updated', dmxInfo);
 }
@@ -47,43 +51,17 @@ function generateOrderedChannelsList() {
 
 function playPatternDMX() {
   updateLayout();
-  // to do
+  var patternJson = getAnimationJson();
+  runAnimation(patternJson);  
 }
 
 function loopPatternDMX() {
   updateLayout();
-  /*var loopPatternJson = {};
-  var startingAddress = 0; // use 0 instead of 1 here because we are not iterating by index and channel numbers are already correct
-  var node = universe.dmxController.out.connectedTo.parent;
+  var patternJson = getAnimationJson();
+  loopAnimation(patternJson);  
+}
 
-  while (node) {
-      node.startingAddress = startingAddress;
-      var nodeName = node.name;
-      for (var s = 0; s < pattern.scenes.length; s++) {
-        var scene = pattern.scenes[s];
-        for (var f = 0; f < scene.fixtureInfo.length; f++) {
-          var fixture = scene.fixtureInfo[f];
-          if (nodeName == fixture.name) { // need to fix later for arbitrary channel values
-            for (var c = 0; c < fixture['channels'].length; c++) { // get channel info per fixture per scene
-              var channel = fixture['channels'][c];
-              var channelInfoJson = {value: channel['value'], time: scene.length};
-              if (!loopPatternJson[channel['number'] + startingAddress])
-                loopPatternJson[channel['number'] + startingAddress] = [];
-              loopPatternJson[channel['number'] + startingAddress].push(channelInfoJson);
-            }
-          }
-        }
-      }
-      startingAddress = startingAddress + node.channels.length;
-      if (node.out && node.out.connectedTo && node.out.connectedTo.parent) {
-          node = node.out.connectedTo.parent;
-      } else {
-          node = null;
-      }
-  }
-  console.log(loopPatternJson);
-  runAnimation(loopPatternJson);*/
-
+function getAnimationJson() {
   var patternJson = {};
   var node = universe.dmxController.out.connectedTo.parent;
   while (node) {
@@ -111,8 +89,8 @@ function loopPatternDMX() {
     } else {
         node = null;
     }
-  }
-  runAnimation(patternJson);  
+  }  
+  return patternJson;
 }
 
 function stopLoopingPatternDMX() {

@@ -32,16 +32,11 @@ io.on('connection', function(socket){
   });
 
   socket.on('run-animation', function (data) {
-    var waittime = 0;
-    for (var key in data) {
-      if (data.hasOwnProperty(key)) {
-        var sceneData = data[key];
-        var channelsData = sceneData['channelData'];
-        var timeData = parseInt(sceneData['time']);
-        updateDMXAndWait(universeName, channelsData, waittime);
-        waittime += timeData;
-      }
-    }
+    runAnimation(data);
+  });  
+
+  socket.on('loop-animation', function (data) {
+    loopAnimation(data);
   });  
 
   socket.on('stop-all-animations', function (data) {
@@ -60,6 +55,28 @@ io.on('connection', function(socket){
 http.listen(PORT, function(){
   console.log('listening for WEBSOCKET connections on *:'+ PORT);
 });
+
+function runAnimation(data) {
+  var waittime = 0;
+  for (var key in data) {
+    if (data.hasOwnProperty(key)) {
+      var sceneData = data[key];
+      var channelsData = sceneData['channelData'];
+      var timeData = parseInt(sceneData['time']);
+      updateDMXAndWait(universeName, channelsData, waittime);
+      waittime += timeData;
+    }
+  }
+  return waittime;
+}
+
+function loopAnimation(data) {
+  var totalwaittime = runAnimation();
+  var timeIntervalID = setInterval(() => {
+    runAnimation(data);
+  }, totalwaittime); 
+  animations.push(timeIntervalID);
+}
 
 function updateDMXAndWait(uniName, channels, time) {
   setTimeout(() => {dmx.update(uniName, channels)}, time);
