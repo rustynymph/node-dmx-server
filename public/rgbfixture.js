@@ -101,10 +101,10 @@ class RGBFixture extends Fixture {
   updateComponentPositions() {
     this.nameInput.position(this.x-this.size/4+65, this.y+this.size-20);    
     this.presetDevicePicker.position(this.x-this.size/4+65, this.y+this.size);    
-    this.colorpicker.position(this.x-this.size/4, this.y+this.size+44);
-    this.brightnesspicker.position(this.x-this.size/4, this.y+this.size+74);  
-    this.animationcolorpicker.position(this.x-this.size/4, this.y+this.size+44);      
-    this.animationbrightnesspicker.position(this.x-this.size/4, this.y+this.size+74);                 
+    this.colorpicker.position(this.x-this.size/4, this.y+this.size+24);
+    this.brightnesspicker.position(this.x-this.size/4, this.y+this.size+54);  
+    this.animationcolorpicker.position(this.x-this.size/4, this.y+this.size+24);      
+    this.animationbrightnesspicker.position(this.x-this.size/4, this.y+this.size+54);                 
   }
           
   displayText() {
@@ -124,6 +124,7 @@ class RGBFixture extends Fixture {
     this.animationcolorpicker.hide();      
     this.animationbrightnesspicker.hide();      
     this.presetDevicePicker.show();
+    this.channelsInput.hide();
   }
 
   displayAnimationEditorComponents() {
@@ -132,6 +133,7 @@ class RGBFixture extends Fixture {
     this.animationcolorpicker.show();      
     this.animationbrightnesspicker.show();    
     this.presetDevicePicker.hide();
+    this.channelsInput.hide();
     //this.animationcolorpicker.value(this.colorpicker.value());
   }
          
