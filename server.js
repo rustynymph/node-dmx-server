@@ -32,50 +32,16 @@ io.on('connection', function(socket){
   });
 
   socket.on('run-animation', function (data) {
-    //var animation = new DMX.Animation();
-    /*for (var key in data) { 
-      if (data.hasOwnProperty(key)) {
-        for (var i = 0; i < data[key].length; i++) {
-          var info = data[key][i]; // channel values over time
-          var value = info['value']; 
-          var time = info['time']; 
-          if (key && value && time)
-            animation.add({key: value, key: value, ...}, time);
-            animations.push(animation);
-          console.log(key);
-          console.log(value);
-          console.log(time);                   
-        }
-      }
-    }
-    for (var a = 0; a < animations.length; a++) {
-      animations[a].runLoop(universe);
-    }*/
-    /*dmx.update(universeName, {1: 255, 2: 0, 3: 0, 4: 0, 5: 0});
-    animation.add({2: 255, 3: 0, 4: 0}, 500);
-    animation.add({2: 0, 3: 255, 4: 0}, 500);
-    animation.add({2: 0, 3: 255, 4: 255}, 500);
-    animation.runLoop(universe);*/
-
     var waittime = 0;
-    var datatest = [];
     for (var key in data) {
       if (data.hasOwnProperty(key)) {
         var sceneData = data[key];
         var channelsData = sceneData['channelData'];
         var timeData = parseInt(sceneData['time']);
-        datatest.push({channels: channelsData, time: waittime});
-        //setTimeout(() => {dmx.update(universeName, channelsData)}, waittime);
+        updateDMXAndWait(universeName, channelsData, waittime);
         waittime += timeData;
       }
     }
-
-    for (var d = 0; d < datatest.length; d++) {
-      var woop = datatest[d];
-      setTimeout(() => {dmx.update(universeName, woop['channels'])}, woop['time']); // maybe will solve scope issue?
-    }
-
-
   });  
 
   socket.on('stop-all-animations', function (data) {
@@ -94,6 +60,10 @@ io.on('connection', function(socket){
 http.listen(PORT, function(){
   console.log('listening for WEBSOCKET connections on *:'+ PORT);
 });
+
+function updateDMXAndWait(uniName, channels, time) {
+  setTimeout(() => {dmx.update(uniName, channels)}, time);
+}
 
 function hexToRgb(hex) {
     var result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
