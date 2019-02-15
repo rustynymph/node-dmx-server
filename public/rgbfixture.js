@@ -3,10 +3,10 @@ var rgbFixtureDeviceTypes = [
     name: 'baisun-led-8-ch', 
     channels: 8, 
     brightnessChannel: 1, 
-    redChannel: 5, 
-    greenChannel: 6, 
-    blueChannel: 7, 
-    whiteChannel: 8 
+    redChannel: 2, 
+    greenChannel: 3, 
+    blueChannel: 4, 
+    whiteChannel: 5 
   },
   {
   name: 'coidak-led-8-ch', 
