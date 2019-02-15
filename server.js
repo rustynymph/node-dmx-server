@@ -72,7 +72,7 @@ function runAnimation(data) {
 }
 
 function loopAnimation(data) {
-  var totalwaittime = runAnimation();
+  var totalwaittime = runAnimation(data);
   console.log(totalwaittime);
   var timeIntervalID = setInterval(() => {
     runAnimation(data);
