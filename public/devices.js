@@ -21,3 +21,6 @@ var rgbFixtureDeviceTypes = [
     name: 'custom'
   }
 ];
+
+var DMXControllerOptions = ['dmxking-ultra-dmx-pro', 'enttec-usb-dmx-pro', 
+                            'enttec-open-usb-dmx', 'artnet', 'bbdmx', 'dmx4all'];

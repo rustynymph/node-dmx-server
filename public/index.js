@@ -1,7 +1,6 @@
 var socket = io();
 var mode = 0;
 var universe;
-var DMXControllerOptions = ['dmxking-ultra-dmx-pro', 'enttec-usb-dmx-pro', 'enttec-open-usb-dmx', 'artnet', 'bbdmx', 'dmx4all'];
 var fixtureOptions = ['RGB Light'];
 var fixtureButton, fixtureSelect, saveRigButton, animationButton, liveModeButton, 
 uploadLayoutButton, layoutEditingModeButton, saveSceneButton, scenesElement, playPatternButton,
