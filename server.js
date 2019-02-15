@@ -32,8 +32,6 @@ io.on('connection', function(socket){
   });
 
   socket.on('run-animation', function (data) {
-    console.log(data);
-
     //var animation = new DMX.Animation();
     /*for (var key in data) { 
       if (data.hasOwnProperty(key)) {
@@ -65,6 +63,7 @@ io.on('connection', function(socket){
         var sceneData = data[key];
         var channelsData = sceneData['channelData'];
         var timeData = parseInt(sceneData['time']);
+        console.log(channelsData);
         setTimeout(() => {dmx.update(universeName, channelsData)}, waittime);
         waittime += timeData;
       }
