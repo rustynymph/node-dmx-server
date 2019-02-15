@@ -65,8 +65,6 @@ function getAnimationJson() {
   var patternJson = {};
   var node = universe.dmxController.out.connectedTo.parent;
   while (node) {
-    //var startingAddress = 1;
-    //node.startingAddress = startingAddress;
     var nodeName = node.name;
     for (var s = 0; s < pattern.scenes.length; s++) {
       var startingAddress = 1;

@@ -81,6 +81,7 @@ function loopAnimation(data) {
 
 function updateDMXAndWait(uniName, channels, time) {
   setTimeout(() => {dmx.update(uniName, channels)}, time);
+  console.log("updated " + channels + " for " + time + " ms");
 }
 
 function hexToRgb(hex) {
