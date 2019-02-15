@@ -8,19 +8,34 @@ function layoutToJson() {
         positionY: fixture.y, color: fixture.color, brightness: fixture.brightness, size: fixture.size};
         for (var c = 0; c < fixture.channels.length; c++){
             channel = fixture.channels[c];
-            fixtureJson['channels'].push({name: channel.name, number: channel.number, value: channel.value});
+            fixtureJson['channels'].push( {name: channel.name, number: channel.number, value: channel.value} );
         }
         layout['universes'][0]['fixtures'].push(fixtureJson);
     }
     return layout;
 }
 
+function patternsToJson() {
+    var patternsList = [];
+
+    for (var p = 0; p < patterns.length; p++) {
+        var patternJson = {name: '', fixtureInfo: []};
+        for (var f = 0; f < patterns[p].fixtureInfo.length; f++) {
+            var fixtureInfoJson = {};
+            patternJson['fixtureInfo'].push(fixtureInfoJson);
+        }
+        patternsList.push(patternJson);
+    }
+
+    return {patterns: patternsList};
+}
+
 function saveProject() {
-    var layout = layoutToJson();
-    stringifiedLayout = JSON.stringify(layout);
+    var project = {layout: layoutToJson(), patterns: patternsToJson()};
+    var stringifiedProject = JSON.stringify(project);
     var d = new Date();
-    var filename = 'fixturelayout' + '_' + (d.getMonth()+1).toString() + '_' + d.getDate() + '_' + d.getFullYear() + '.json';
-    download(stringifiedLayout, filename, 'json');
+    var filename = 'dmxproject' + '_' + (d.getMonth()+1).toString() + '_' + d.getDate() + '_' + d.getFullYear() + '.json';
+    download(stringifiedProject, filename, 'json');
   }
   
 function download(data, filename, type) {
