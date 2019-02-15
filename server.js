@@ -58,17 +58,21 @@ io.on('connection', function(socket){
     animation.runLoop(universe);*/
 
     var waittime = 0;
+    var datatest = [];
     for (var key in data) {
-      console.log(key); 
-      console.log(data[key]); 
       if (data.hasOwnProperty(key)) {
         var sceneData = data[key];
         var channelsData = sceneData['channelData'];
         var timeData = parseInt(sceneData['time']);
-        console.log(channelsData);
-        setTimeout(() => {dmx.update(universeName, channelsData)}, waittime);
+        datatest.push({channels: channelsData, time: waittime});
+        //setTimeout(() => {dmx.update(universeName, channelsData)}, waittime);
         waittime += timeData;
       }
+    }
+
+    for (var d = 0; d < datatest.length; d++) {
+      var woop = datatest[d];
+      setTimeout(() => {dmx.update(universeName, woop['channels'])}, woop['time']); // maybe will solve scope issue?
     }
 
 
