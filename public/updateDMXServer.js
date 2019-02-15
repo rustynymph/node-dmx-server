@@ -86,6 +86,7 @@ function loopPatternDMX() {
 
   var patternJson = {};
   var startingAddress = 1;
+  var node = universe.dmxController.out.connectedTo.parent;
   while (node) {
     node.startingAddress = startingAddress;
     var nodeName = node.name;
