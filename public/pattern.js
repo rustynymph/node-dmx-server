@@ -17,6 +17,7 @@ class Pattern {
       var fixtureJson = {name: fixture.name, number: fixture.number, startingAddress: fixture.startingAddress,channels:[], positionX: fixture.x, 
         positionY: fixture.y, color: fixture.color, brightness: fixture.brightness, size: fixture.size, connectedTo: fixture.connectedTo,
             connectedBy: fixture.connectedBy};
+        console.log(fixtureJson);
         for (var c = 0; c < fixture.channels.length; c++) {
             var channel = fixture.channels[c];
             fixtureJson['channels'].push({name: channel.name, number: channel.number, value: channel.value});

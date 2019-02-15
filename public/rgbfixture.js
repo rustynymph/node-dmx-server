@@ -30,13 +30,19 @@ class RGBFixture extends Fixture {
       this.w = 0;
       this.brightness = 255;         
       this.type = rgbFixtureDeviceTypes[0]; // channels below should match specs for default light
-      this.brightnessChannel = 1;
-      this.redChannel = 5;
-      this.greenChannel = 6;
-      this.blueChannel = 7;
-      this.whiteChannel = 8;
+      this.numChannels = this.type['channels'];
+      this.brightnessChannel = this.type['brightnessChannel'];
+      this.redChannel = this.type['redChannel'];
+      this.greenChannel = this.type['greenChannel'];
+      this.blueChannel = this.type['blueChannel'];
+      this.whiteChannel = this.type['whiteChannel'];
+      for (var c = 0; c < this.numChannels; c++) {
+        this.channels.push(new Channel(this.channels.length));
+      }
       this.createUIControls();     
       this.createAnimationUIControls();   
+      this.updateBrightness();
+      this.updateColor();
   }
 
   /* Methods for updating RGB fixture parameters */
