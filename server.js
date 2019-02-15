@@ -58,7 +58,9 @@ io.on('connection', function(socket){
     animation.runLoop(universe);*/
 
     var waittime = 0;
-    for (var key in data) { 
+    for (var key in data) {
+      console.log(key); 
+      console.log(data[key]); 
       if (data.hasOwnProperty(key)) {
         var sceneData = data[key];
         var channelsData = sceneData['channelData'];
