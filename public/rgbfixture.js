@@ -9,13 +9,16 @@ var rgbFixtureDeviceTypes = [
     whiteChannel: 5 
   },
   {
-  name: 'coidak-led-8-ch', 
-  channels: 8, 
-  brightnessChannel: 4, 
-  redChannel: 5, 
-  greenChannel: 6, 
-  blueChannel: 7, 
-  whiteChannel: 8 
+    name: 'coidak-led-8-ch', 
+    channels: 8, 
+    brightnessChannel: 4, 
+    redChannel: 5, 
+    greenChannel: 6, 
+    blueChannel: 7, 
+    whiteChannel: 8 
+  },
+  {
+    name: 'custom'
   }
 ];
 
@@ -113,9 +116,6 @@ class RGBFixture extends Fixture {
     textSize(12);
     text('name:', this.x-this.size/4, this.y+this.size-16);  
     text('device:', this.x-this.size/4, this.y+this.size+2);  
-    if (mode == 0){
-
-    }
   }
 
   displayLayoutEditorComponents() {
@@ -125,6 +125,8 @@ class RGBFixture extends Fixture {
     this.animationbrightnesspicker.hide();      
     this.presetDevicePicker.show();
     this.channelsInput.hide();
+    this.nameInput['elt'].disabled = false;
+    this.presetDevicePicker['elt'].disabled = false;
   }
 
   displayAnimationEditorComponents() {
@@ -132,8 +134,10 @@ class RGBFixture extends Fixture {
     this.brightnesspicker.hide();
     this.animationcolorpicker.show();      
     this.animationbrightnesspicker.show();    
-    this.presetDevicePicker.hide();
+    //this.presetDevicePicker.hide();
     this.channelsInput.hide();
+    this.nameInput['elt'].disabled = true;
+    this.presetDevicePicker['elt'].disabled = true;
     //this.animationcolorpicker.value(this.colorpicker.value());
   }
          
@@ -171,14 +175,19 @@ class RGBFixture extends Fixture {
 
   updateDevicePreset(optionIndex) {
     this.type = rgbFixtureDeviceTypes[optionIndex];
-    this.brightnessChannel = this.type['brightnessChannel'];
-    this.redChannel = this.type['redChannel'];
-    this.greenChannel = this.type['greenChannel'];
-    this.blueChannel = this.type['blueChannel'];
-    this.whiteChannel = this.type['whiteChannel'];
-    this.blackoutChannels(); // reset all channels to 0
-    this.updateColor();
-    this.updateBrightness();
+    if (this.type['name'] == 'custom') {
+      // have popup channel editor here
+    }
+    else {
+      this.brightnessChannel = this.type['brightnessChannel'];
+      this.redChannel = this.type['redChannel'];
+      this.greenChannel = this.type['greenChannel'];
+      this.blueChannel = this.type['blueChannel'];
+      this.whiteChannel = this.type['whiteChannel'];
+      this.blackoutChannels(); // reset all channels to 0
+      this.updateColor();
+      this.updateBrightness();
+    }
   }
 
 }

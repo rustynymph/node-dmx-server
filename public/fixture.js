@@ -79,6 +79,7 @@ class Fixture {
   }  
 
   updateName() { this.name = this.nameInput.value(); }
+  
   updateChannelNumber() { 
       this.numChannels = this.channelsInput.value();
       this.channels = [];
@@ -86,6 +87,12 @@ class Fixture {
         this.channels.push(new Channel(i));
       }
     }  
+
+    blackoutChannels() {
+      for (var c = 0; c < this.channels.length; c++) {
+        this.channels[c].value = 0;
+      }
+    }    
 }
 
 class FixtureIn {
@@ -221,12 +228,6 @@ class FixtureOut {
     updateConnectedBy(thing) {
         this.connectedBy = thing;
     }    
-
-    blackoutChannels() {
-      for (var c = 0; c < this.channels.length; c++) {
-        this.channels[c].value = 0;
-      }
-    }
 }
 
 function hexToRgb(hex) {
