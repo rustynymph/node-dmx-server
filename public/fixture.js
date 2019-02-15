@@ -221,6 +221,12 @@ class FixtureOut {
     updateConnectedBy(thing) {
         this.connectedBy = thing;
     }    
+
+    blackoutChannels() {
+      for (var c = 0; c < this.channels.length; c++) {
+        this.channels[c].value = 0;
+      }
+    }
 }
 
 function hexToRgb(hex) {
