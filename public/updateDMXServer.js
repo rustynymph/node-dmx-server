@@ -100,8 +100,8 @@ function loopPatternDMX() {
         if (nodeName == fixture.name) { // need to fix later for arbitrary channel values
           for (var c = 0; c < fixture['channels'].length; c++) { // get channel info per fixture per scene
             channels[c + startingAddress] = fixture['channels'][c].value;
-            startingAddress++;
           }
+          startingAddress += fixture['channels'].length;
         }
       }
       patternJson[s] = {channelData: channels, time: scene.length};
