@@ -41,7 +41,8 @@ io.on('connection', function(socket){
 
   socket.on('stop-all-animations', function (data) {
     for (var a = 0; a < animations.length; a++) {
-      animations[a].stop();
+      //animations[a].stop();
+      clearInterval(animations[a]);
     }
   });
 
