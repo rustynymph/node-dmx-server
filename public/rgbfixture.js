@@ -2,22 +2,25 @@ class RGBFixture extends Fixture {
   
   constructor(number) {
       super(number);
-      this.color = '#ff0000';
+
+      /* set default color attributes */
       this.r = 255;
       this.g = 0;
       this.b = 0;
       this.w = 0;
+      this.color = '#ff0000';
       this.brightness = 255;         
+
+      /* sets default channel attributes */
       this.type = rgbFixtureDeviceTypes[0]; // channels below should match specs for default light
-      this.numChannels = this.type['channels'];
+      this.numChannels       = this.type['channels'];
       this.brightnessChannel = this.type['brightnessChannel'];
-      this.redChannel = this.type['redChannel'];
-      this.greenChannel = this.type['greenChannel'];
-      this.blueChannel = this.type['blueChannel'];
-      this.whiteChannel = this.type['whiteChannel'];
-      for (var c = 0; c < this.numChannels; c++) {
-        this.channels.push(new Channel(this.channels.length));
-      }
+      this.redChannel        = this.type['redChannel'];
+      this.greenChannel      = this.type['greenChannel'];
+      this.blueChannel       = this.type['blueChannel'];
+      this.whiteChannel      = this.type['whiteChannel'];
+
+      this.initializeChannels();
       this.createUIControls();     
       this.createAnimationUIControls();   
       this.updateBrightness();
@@ -33,10 +36,7 @@ class RGBFixture extends Fixture {
   updateBrightness() { 
     if (mode == 1)
       this.brightness = this.animationbrightnesspicker.value();    
-
-    if (this.channels[this.brightnessChannel-1]) {
-        this.channels[this.brightnessChannel-1].value = this.brightness;
-    }
+    this.updateChannel(this.brightnessChannel-1, this.brightness);
   }
 
   updateRGBColorChannelValues() {
@@ -44,34 +44,21 @@ class RGBFixture extends Fixture {
     this.r = rgbColor['r'];
     this.g = rgbColor['g'];
     this.b = rgbColor['b'];
-
-    if (this.channels[this.redChannel-1]) {
-        this.channels[this.redChannel-1].value = this.r;
-    }
-    if (this.channels[this.greenChannel-1]) {
-        this.channels[this.greenChannel-1].value = this.g;
-    }
-    if (this.channels[this.blueChannel-1]) {
-        this.channels[this.blueChannel-1].value = this.b;
-    }
+    this.updateChannel(this.redChannel-1, this.r);
+    this.updateChannel(this.greenChannel-1, this.g);
+    this.updateChannel(this.blueChannel-1, this.b);
   }
 
   /* Methods for displaying RGB fixture and its components */
   displayComponents() {
-      if (mode == 0) {
-        fill('#aaaaaa');
-      } else {
-        fill(this.r, this.g, this.b, this.brightness);
-      }
+      if (mode == 0) fill('#aaaaaa');
+      else fill(this.r, this.g, this.b, this.brightness);
       ellipse(this.x, this.y, this.size, this.size);
       this.displayText();
       this.updateComponentPositions();
       
-      if (mode == 0) {
-        this.displayLayoutEditorComponents();             
-      } else {
-        this.displayAnimationEditorComponents();            
-      }
+      if (mode == 0) this.displayLayoutEditorComponents();             
+      else this.displayAnimationEditorComponents();            
     }   
 
   updateComponentPositions() {
@@ -93,7 +80,6 @@ class RGBFixture extends Fixture {
     this.animationcolorpicker.hide();      
     this.animationbrightnesspicker.hide();      
     this.presetDevicePicker.show();
-    this.channelsInput.hide();
     this.nameInput['elt'].disabled = false;
     this.presetDevicePicker['elt'].disabled = false;
   }
@@ -101,7 +87,6 @@ class RGBFixture extends Fixture {
   displayAnimationEditorComponents() {
     this.animationcolorpicker.show();      
     this.animationbrightnesspicker.show();    
-    this.channelsInput.hide();
     this.nameInput['elt'].disabled = true;
     this.presetDevicePicker['elt'].disabled = true;
   }

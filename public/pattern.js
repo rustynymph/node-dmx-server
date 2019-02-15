@@ -2,12 +2,8 @@ class Pattern {
 
   constructor() {
       this.scenes = [];
-      this.sceneButtons = [];
-      this.timeInputs = [];
-      this.deleteSceneButtons = [];
       this.isLooping = false;
       this.timeIntervalID = null;
-      this.timeOuts = [];
   }
 
   /* to do: need to check and make sure rig is consistently connected and set up */
@@ -17,7 +13,7 @@ class Pattern {
       return;
     }
 
-    var scene = new Scene(this.scenes.length);
+    var scene = new Scene(this, this.scenes.length);
     for (var f = 0; f < universe.fixtures.length; f++) {
       var fixture = universe.fixtures[f];
       var fixtureJson = {name: fixture.name, number: fixture.number, startingAddress: fixture.startingAddress,channels:[], positionX: fixture.x, 
@@ -31,56 +27,32 @@ class Pattern {
       scene.fixtureInfo.push(fixtureJson);
     }
     this.scenes.push(scene);
-    this.addSceneButton(scene);
-    this.addRemoveSceneButton(scene);
-    this.addSceneTimeInput(scene);
   }
     
-  removeScene(scene) {
-    if (confirm("Are you sure you want to delete scene #" + parseInt(scene.number+1) + "?")) {
+  removeScene(sceneNumber) {
+    if (confirm("Are you sure you want to delete scene #" + parseInt(sceneNumber+1) + "?")) {
       // delete 
       console.log("deleting shit");
       for (var s = 0; s < this.scenes.length; s++) {
-        if (scene.number = s) {
-          this.scenes.splice(s);
-          this.sceneButtons[s].remove();
-          this.timeInputs[s].remove();
-          this.deleteSceneButtons[s].remove();
-          this.sceneButtons.splice(s);
-          this.timeInputs.splice(s);
-          this.deleteSceneButtons.splice(s);
+        if (sceneNumber == s) {
+          this.scenes[s].removeUIElements();
+          this.scenes.splice(s, 1);
         }
       }
+      this.renumberScenes();
     } else {
       // do nothing
     }   
   }
 
-  addSceneButton(scene) {
-    var btn = createButton('Scene ' + (scene.number+1).toString());
-    btn.mousePressed(() => scene.show());
-    this.sceneButtons.push(btn);
-    var linebreak = document.createElement("br");
-    scenesElement['elt'].appendChild(linebreak);
-    scenesElement['elt'].appendChild(btn['elt']);   
-  }
-
-  addSceneTimeInput(scene) {
-    var timeInput = createInput('500');
-    timeInput.size(50);
-    timeInput.changed(() => {scene.length = parseInt(timeInput.value())});
-    this.timeInputs.push(timeInput);
-    var msTextNode = document.createTextNode("ms");
-    scenesElement['elt'].appendChild(timeInput['elt']);   
-    scenesElement['elt'].appendChild(msTextNode);     
-  }
-
-  addRemoveSceneButton(scene) {
-    var deletebtn = createButton('X');
-    deletebtn['elt'].style.color = 'red';
-    deletebtn.mousePressed(() => this.removeScene(scene));
-    scenesElement['elt'].appendChild(deletebtn['elt']);  
-    this.deleteSceneButtons.push(deletebtn); 
+  renumberScenes() {
+    for (var i = 0; i < this.scenes.length; i++) {
+      console.log ("old: " + this.scenes[i].number + " new: " + i);
+      this.scenes[i].number = i;
+      this.scenes[i].deleteButton.mousePressed(() => this.removeScene(i));
+      console.log(this.scenes[i].selectButton['elt'].value);
+      this.scenes[i].selectButton['elt'].value = 'Scene ' + parseInt(i+1);
+    }
   }
 
   play() {

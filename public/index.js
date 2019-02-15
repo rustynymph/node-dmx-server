@@ -1,13 +1,29 @@
-var socket = io();
-var mode = 0;
-var universe;
-var fixtureOptions = ['RGB Light'];
-var fixtureButton, fixtureSelect, saveRigButton, animationButton, liveModeButton, 
-uploadLayoutButton, layoutEditingModeButton, saveSceneButton, scenesElement, playPatternButton,
-playPatternDMXButton, loopPatternDMXButton, stopLoopingPatternDMXButton;
-var selectedModeHighlightX = 0;
-var pattern; // change this later
+/* 
+ * This file sets up our p5.js canvas and initializes
+ * the UI elements of the editor
+ * Author: Annie Kelly
+ */
 
+var socket = io();                // creates web socket connection to server
+
+var universe;                     // for now you can edit one DMX512 universe at a time
+var patterns = [];                // keeps track of patterns (animations) users have created
+var pattern;                      // change this later
+
+var mode = 0;                     // application starts out in layout editing mode
+var selectedModeHighlightX = 0;   // position of highlighted segment in nav bar
+
+var fixtureButton, saveRigButton, // references to UI elements
+  animationButton, liveModeButton,
+  uploadLayoutButton, layoutEditModeButton,
+  saveSceneButton, playPatternButton, 
+  playPatternDMXButton, loopPatternDMXButton, 
+  stopLoopPatternDMXButton, fixtureSelect,
+  scenesElement;
+
+/* 
+ * initializes our dmx universe & sets up our editor, p5.js function that runs once
+ */
 function setup() {
   universe = new Universe(0);
   pattern = new Pattern();
@@ -22,6 +38,9 @@ function setup() {
   hideLiveUIButtons();  
 }
 
+/*
+ * p5.js loop that updates our canvas and makes calls to render our objects
+ */
 function draw() { 
   background(0);
   displayObjects();
@@ -37,23 +56,6 @@ function draw() {
   rect(selectedModeHighlightX, 20, 250, 5); 
 }
 
-function mousePressed() {
-  if (mode == 0) {
-    mousePressedLayoutEditingMode();
-  }
-}
-
-function mouseDragged() {
-  if (mode == 0) {
-    mouseDraggedLayoutEditingMode();
-  }
-}
-
-function mouseReleased() {
-  if (mode == 0) {
-    mouseReleasedLayoutEditingMode();
-  }
-}
 
 function layoutEditingMode() {
   mode = 0;
@@ -61,11 +63,6 @@ function layoutEditingMode() {
   showLayoutUIButtons();
   hideAnimationUIButtons();
   hideLiveUIButtons();
-  for (var f = 0; f < universe.fixtures.length; f++) {
-    var fixture = universe.fixtures[f];
-    fixture.updateColor();
-    fixture.updateBrightness();
-  }
 }
 
 function animationMode() {
@@ -85,6 +82,9 @@ function liveControlMode() {
   hideAnimationUIButtons();
 }
 
+/*
+ * helper functions to show or hide relevant UI elements
+ */
 function showLayoutUIButtons() {
   fixtureSelect.show();
   fixtureButton.show();
@@ -98,8 +98,8 @@ function hideLayoutUIButtons() {
 }
 
 function showAnimationUIButtons() {
-  saveSceneButton.show();
   scenesElement.show();
+  saveSceneButton.show();
   playPatternButton.show();
   loopPatternButton.show();
   stopLoopingPatternButton.show();  
@@ -116,15 +116,18 @@ function hideAnimationUIButtons() {
 function showLiveUIButtons() {
   playPatternDMXButton.show();
   loopPatternDMXButton.show();
-  stopLoopingPatternDMXButton.show();
+  stopLoopPatternDMXButton.show();
 }
 
 function hideLiveUIButtons() {
   playPatternDMXButton.hide();
   loopPatternDMXButton.hide();
-  stopLoopingPatternDMXButton.hide();  
+  stopLoopPatternDMXButton.hide();  
 }
 
+/*
+ * helper functions that actually initialize the UI elements in the DOM
+ */
 function createAndShowLayoutUIButtons() {
   fixtureSelect = createSelect();
   fixtureSelect.position(10, 40);
@@ -132,10 +135,10 @@ function createAndShowLayoutUIButtons() {
     fixtureSelect.option(fixtureOptions[f]);
   }
   fixtureButton = createButton('Add fixture');
-  fixtureButton.position(100, 40);
-  fixtureButton.mousePressed(() => addFixture(0, fixtureSelect.value()));    
   saveRigButton = createButton('Download project');
+  fixtureButton.position(100, 40);
   saveRigButton.position(10, 60);
+  fixtureButton.mousePressed(() => addFixture(0, fixtureSelect.value()));    
   saveRigButton.mousePressed(saveProject);    
 }
 
@@ -148,61 +151,63 @@ function createAndShowAnimationUIButtons() {
   scenesElement.style('overflow-x', 'hidden');
   scenesElement.attribute('id', 'scenes-div');
   scenesElement.attribute('font-family', 'Arial, Helvetica, sans-serif');
-
-  for (var s = 0; s < pattern.sceneButtons.length; s++) {
-    var linebreak = document.createElement("br");
-    var msTextNode = document.createTextNode("ms");
-    scenesElement['elt'].appendChild(linebreak);
-    scenesElement['elt'].appendChild(pattern.sceneButtons[s]['elt']);   
-    scenesElement['elt'].appendChild(pattern.timeInputs[s]['elt']);   
-    scenesElement['elt'].appendChild(msTextNode);     
-  }
-
-  saveSceneButton = createButton('Save scene');
-  saveSceneButton.position(width-330, 30);
-  saveSceneButton.mousePressed(() => pattern.saveScene());      
+  saveSceneButton   = createButton('Save scene');
   playPatternButton = createButton('Play pattern');
-  playPatternButton.position(width-330, 50);
-  playPatternButton.mousePressed(() => pattern.play());   
   loopPatternButton = createButton('Loop pattern');
-  loopPatternButton.position(width-330, 70);
-  loopPatternButton.mousePressed(() => pattern.loop());   
   stopLoopingPatternButton = createButton('Stop looping pattern');
+  saveSceneButton.position(width-330, 30);
+  playPatternButton.position(width-330, 50);
+  loopPatternButton.position(width-330, 70);
   stopLoopingPatternButton.position(width-330, 90);
+  saveSceneButton.mousePressed(() => pattern.saveScene());      
+  playPatternButton.mousePressed(() => pattern.play());   
+  loopPatternButton.mousePressed(() => pattern.loop());   
   stopLoopingPatternButton.mousePressed(() => pattern.stopLooping());
-  
-  for (var i = 0; i < universe.fixtures.length; i++) {
-    var fixture = universe.fixtures[i];
-    fixture.animationcolorpicker.value(fixture.color);
-    fixture.animationbrightnesspicker.value(fixture.brightness);
-  }
 }
 
 function createAndShowLiveUIButtons() {
-  playPatternDMXButton = createButton('Play pattern');
+  playPatternDMXButton     = createButton('Play pattern');
+  loopPatternDMXButton     = createButton('Loop pattern');
+  stopLoopPatternDMXButton = createButton('Stop looping pattern');
   playPatternDMXButton.position(10, 40);
-  playPatternDMXButton.mousePressed(playPatternDMX);    
-  loopPatternDMXButton = createButton('Loop pattern');
   loopPatternDMXButton.position(10, 60);
+  stopLoopPatternDMXButton.position(10, 80);
+  playPatternDMXButton.mousePressed(playPatternDMX);    
   loopPatternDMXButton.mousePressed(loopPatternDMX);   
-  stopLoopingPatternDMXButton = createButton('Stop looping pattern');
-  stopLoopingPatternDMXButton.position(10, 80);
-  stopLoopingPatternDMXButton.mousePressed(stopLoopingPatternDMX);     
+  stopLoopPatternDMXButton.mousePressed(stopLoopingPatternDMX);     
 }
 
 function createAndShowUIButtons() {
-  animationButton = createButton('Animation editor');
-  animationButton.position(510, 10);
-  animationButton.mousePressed(animationMode); 
-  animationButton.size(250);
-  liveModeButton = createButton('LIVE MODE');
-  liveModeButton.position(260, 10);
-  liveModeButton.mousePressed(liveControlMode);
-  liveModeButton.size(250);
-  layoutEditingModeButton = createButton('Layout editor');
-  layoutEditingModeButton.position(10, 10);
-  layoutEditingModeButton.mousePressed(layoutEditingMode);  
-  layoutEditingModeButton.size(250);
+  animationButton      = createButton('Animation editor');
+  liveModeButton       = createButton('LIVE MODE');
+  layoutEditModeButton = createButton('Layout editor');
   uploadLayoutButton = createFileInput(handleFile);
+  animationButton.position(510, 10);
+  liveModeButton.position(260, 10);
+  layoutEditModeButton.position(10, 10);
   uploadLayoutButton.position(850, 10);  
+  animationButton.mousePressed(animationMode); 
+  liveModeButton.mousePressed(liveControlMode);
+  layoutEditModeButton.mousePressed(layoutEditingMode);  
+  animationButton.size(250);
+  liveModeButton.size(250);
+  layoutEditModeButton.size(250);
+}
+
+/* 
+ * p5.js mouse event handlers
+ */
+function mousePressed() {
+  if (mode == 0)
+    mousePressedLayoutEditingMode();
+}
+
+function mouseDragged() {
+  if (mode == 0)
+    mouseDraggedLayoutEditingMode();
+}
+
+function mouseReleased() {
+  if (mode == 0)
+    mouseReleasedLayoutEditingMode();
 }

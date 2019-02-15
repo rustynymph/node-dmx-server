@@ -1,17 +1,18 @@
 
 class Fixture {
+
   constructor(number) {
     this.number = number
     this.name = 'Fixture' + this.number.toString();
-    this.numChannels = null;
+    this.numChannels = 0;
     this.channels = [];
+    this.startingAddress = null;
     this.size = 75;
     this.radius = this.size/2;
-    this.x = universe.fixtures.length*50+200+this.size;   
-    if (this.x >= windowWidth/1.25) {
-        this.x = 200+this.size;
-    }   
-    this.y = 130+this.size;
+    this.x = universe.fixtures.length * 50 + 200 + this.size;   
+    if (this.x >= windowWidth/1.25)
+      this.x = 200 + this.size;
+    this.y = 130 + this.size;
     this.hovered = false;   
     this.beingDragged = false;
     this.xOffset = 0; 
@@ -20,34 +21,15 @@ class Fixture {
     this.nameInput = createInput(this.name);
     this.nameInput.position(this.x/4, this.y+this.size-20);
     this.nameInput.changed(() => this.updateName());    
-    this.nameInput.size(80);
-    this.channelsInput = createInput(0);
-    this.channelsInput.position(this.x/4, this.y+this.size)
-    this.channelsInput.changed(() => this.updateChannelNumber());        
-    this.channelsInput.size(15);                                                   
-    this.in = new FixtureIn(this);  
+    this.nameInput.size(80);                                                
+    this.in  = new FixtureIn(this);  
     this.out = new FixtureOut(this);
-    this.startingAddress = null;
   }
 
   display() {
-    // check if being hovered or dragged
     if (this.isHovered()) stroke(255); 
     else stroke(0);
-    this.displayComponents();
-  }
-
-  displayComponents() {
-    fill(0);
-    ellipse(this.x, this.y, this.size, this.size);
-    fill(255);
-    stroke(0);
-    textSize(12);
-    text('name:', this.x-this.size/4, this.y+this.size-20);  
-    this.nameInput.position(this.x-this.size/4+50, this.y+this.size-20);
-    this.channelsInput.position(this.x-this.size/4, this.y+this.size);
-    this.in.display();
-    this.out.display();
+    this.displayComponents(); // classes that inherit from Fixture have their own method for this
   }
 
   isHovered() {
@@ -58,7 +40,6 @@ class Fixture {
 
   pressed() {
     if(this.isHovered() && (!locked || this.locked)) { 
-      fill(255, 255, 255);
       locked = true;
       this.locked = true;
     }
@@ -78,24 +59,32 @@ class Fixture {
     locked = false;
   }  
 
-  updateName() { this.name = this.nameInput.value(); }
-  
-  updateChannelNumber() { 
-      this.numChannels = this.channelsInput.value();
-      this.channels = [];
-      for (var i = 0; i < this.numChannels; i++) {
-        this.channels.push(new Channel(i));
-      }
-    }  
+  updateName() {
+     this.name = this.nameInput.value();
+  }
 
-    blackoutChannels() {
-      for (var c = 0; c < this.channels.length; c++) {
-        this.channels[c].value = 0;
-      }
-    }    
+  updateChannel(channel, newValue) {
+    if (this.channels[channel])
+      this.channels[channel].value = newValue;
+  }
+
+  initializeChannels() {
+    for (var i = 0; i < this.numChannels; i++)
+      this.channels.push(new Channel(i));
+  }
+
+  blackoutChannels() {
+    for (var c = 0; c < this.channels.length; c++)
+      this.updateChannel(c, 0);
+  }    
+
 }
 
+/*
+ * The UI element for the XLR input on a fixture
+ */
 class FixtureIn {
+
     constructor(parent) {
         this.parent = parent;
         this.x = this.parent.x-this.parent.size/2-this.size/2;
@@ -111,7 +100,6 @@ class FixtureIn {
 
     display() {
         fill(100);
-        // check if being hovered or dragged
         if (this.isHovered()) stroke(255); 
         else stroke(0);        
         ellipse(this.parent.x-this.parent.size/2-this.size/2, this.parent.y, this.size, this.size);        
@@ -134,10 +122,8 @@ class FixtureIn {
       }
       
       dragged() {
-        if (locked && this.locked){
-            this.isDragged = true;
-          // draw a line or something
-        }
+        if (locked && this.locked)
+          this.isDragged = true;
       }
       
       released() {
@@ -162,7 +148,11 @@ class FixtureIn {
     
 }
 
+/*
+ * The UI element for the XLR output on a fixture
+ */
 class FixtureOut {
+
     constructor(parent) {
         this.parent = parent;
         this.x = this.parent.x+this.parent.size/2+this.size/2;
@@ -178,7 +168,6 @@ class FixtureOut {
 
     display() {
         fill(100);
-        // check if being hovered or dragged
         if (this.isHovered()) stroke(255); 
         else stroke(0);         
         ellipse(this.parent.x+this.parent.size/2+this.size/2, this.parent.y, this.size, this.size);
@@ -197,16 +186,12 @@ class FixtureOut {
           fill(255, 255, 255);
           locked = true;
           this.locked = true;
-          stroke(255);
-          line(this.x, this.y, 100, 100); //test           
         }
       }
       
       dragged() {
-        if (locked && this.locked){
+        if (locked && this.locked)
             this.isDragged = true;
-          // draw a line or something
-        }
       }
       
       released() {
@@ -227,7 +212,8 @@ class FixtureOut {
 
     updateConnectedBy(thing) {
         this.connectedBy = thing;
-    }    
+    }   
+     
 }
 
 function hexToRgb(hex) {

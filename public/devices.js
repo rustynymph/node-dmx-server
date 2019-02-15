@@ -1,3 +1,5 @@
+var fixtureOptions = ['RGB Light'];
+
 var rgbFixtureDeviceTypes = [
   {
     name: 'baisun-led-8-ch', 
