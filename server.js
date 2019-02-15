@@ -73,6 +73,7 @@ function runAnimation(data) {
 
 function loopAnimation(data) {
   var totalwaittime = runAnimation();
+  console.log(totalwaittime);
   var timeIntervalID = setInterval(() => {
     runAnimation(data);
   }, totalwaittime); 
@@ -81,7 +82,6 @@ function loopAnimation(data) {
 
 function updateDMXAndWait(uniName, channels, time) {
   setTimeout(() => {dmx.update(uniName, channels)}, time);
-  console.log("updated " + channels + " for " + time + " ms");
 }
 
 function hexToRgb(hex) {
