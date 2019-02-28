@@ -49,27 +49,27 @@ function generateOrderedChannelsList() {
     return channelsList;
 }
 
-function playPatternDMX() {
+function playPatternDMX(pattern) {
   updateLayout();
-  var patternJson = getAnimationJson();
+  var patternJson = getAnimationJson(pattern);
   runAnimation(patternJson);  
 }
 
-function loopPatternDMX() {
+function loopPatternDMX(pattern) {
   updateLayout();
-  var patternJson = getAnimationJson();
+  var patternJson = getAnimationJson(pattern);
   loopAnimation(patternJson);  
 }
 
-function getAnimationJson() {
+function getAnimationJson(activePattern) {
   var patternJson = {};
   var node = universe.dmxController.out.connectedTo.parent;
   while (node) {
     var nodeName = node.name;
-    for (var s = 0; s < pattern.scenes.length; s++) {
+    for (var s = 0; s < activePattern.scenes.length; s++) {
       var startingAddress = 1;
       node.startingAddress = startingAddress;
-      var scene = pattern.scenes[s];
+      var scene = activePattern.scenes[s];
       channels = {};
       for (var f = 0; f < scene.fixtureInfo.length; f++) {
         var fixture = scene.fixtureInfo[f];
@@ -88,6 +88,7 @@ function getAnimationJson() {
         node = null;
     }
   }  
+  console.log(patternJson);
   return patternJson;
 }
 

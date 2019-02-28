@@ -16,26 +16,23 @@ var selectedModeHighlightX = 0;   // position of highlighted segment in nav bar
 var fixtureButton, saveRigButton, // references to UI elements
   animationButton, liveModeButton,
   uploadLayoutButton, layoutEditModeButton,
-  saveSceneButton, playPatternButton, 
-  playPatternDMXButton, loopPatternDMXButton, 
-  stopLoopPatternDMXButton, fixtureSelect,
-  scenesElement;
+  fixtureSelect, patternsElement, liveButton;
+
+var live;
 
 /* 
  * initializes our dmx universe & sets up our editor, p5.js function that runs once
  */
 function setup() {
+  live = 0;
   universe = new Universe(0);
-  pattern = new Pattern();
   var canvas = createCanvas((windowWidth) / 1.02, (windowHeight) / 1.02);
   canvas.style('display', 'block');
   canvas.parent('fixture-editor'); 
   createAndShowUIButtons();
   createAndShowLayoutUIButtons();
   createAndShowAnimationUIButtons();
-  createAndShowLiveUIButtons();
   hideAnimationUIButtons();
-  hideLiveUIButtons();  
 }
 
 /*
@@ -62,7 +59,6 @@ function layoutEditingMode() {
   selectedModeHighlightX = 0;
   showLayoutUIButtons();
   hideAnimationUIButtons();
-  hideLiveUIButtons();
 }
 
 function animationMode() {
@@ -70,14 +66,11 @@ function animationMode() {
   selectedModeHighlightX = 500;
   showAnimationUIButtons();
   hideLayoutUIButtons();
-  hideLiveUIButtons();
 }
 
 function liveControlMode() {
   mode = 2;
   selectedModeHighlightX = 250;
-  showLiveUIButtons
-  showLiveUIButtons();
   hideLayoutUIButtons();
   hideAnimationUIButtons();
 }
@@ -98,31 +91,16 @@ function hideLayoutUIButtons() {
 }
 
 function showAnimationUIButtons() {
-  scenesElement.show();
-  saveSceneButton.show();
-  playPatternButton.show();
-  loopPatternButton.show();
-  stopLoopingPatternButton.show();  
+  patternsElement.show();
+  liveButton.show();
 }
 
 function hideAnimationUIButtons() {
-  saveSceneButton.hide();
-  scenesElement.hide();
-  playPatternButton.hide();
-  loopPatternButton.hide();
-  stopLoopingPatternButton.hide();
-}
-
-function showLiveUIButtons() {
-  playPatternDMXButton.show();
-  loopPatternDMXButton.show();
-  stopLoopPatternDMXButton.show();
-}
-
-function hideLiveUIButtons() {
-  playPatternDMXButton.hide();
-  loopPatternDMXButton.hide();
-  stopLoopPatternDMXButton.hide();  
+  for (var i = 0; i < patterns.length; i++) {
+    patterns[i].deselected();
+  }
+  patternsElement.hide();
+  liveButton.hide();
 }
 
 /*
@@ -137,44 +115,44 @@ function createAndShowLayoutUIButtons() {
   fixtureButton = createButton('Add fixture');
   saveRigButton = createButton('Download project');
   fixtureButton.position(100, 40);
+  fixtureButton.style('border', '1px solid #000000');
   saveRigButton.position(10, 60);
+  saveRigButton.style('border', '1px solid #000000');
   fixtureButton.mousePressed(() => addFixture(0, fixtureSelect.value()));    
   saveRigButton.mousePressed(saveProject);    
 }
 
 function createAndShowAnimationUIButtons() {
-  scenesElement = createDiv('Scenes');
-  scenesElement.size(250, height-20);
-  scenesElement.position(width-250, 28);
-  scenesElement.style('background-color', '#ffffff');
-  scenesElement.style('overflow', 'auto');
-  scenesElement.style('overflow-x', 'hidden');
-  scenesElement.attribute('id', 'scenes-div');
-  scenesElement.attribute('font-family', 'Arial, Helvetica, sans-serif');
-  saveSceneButton   = createButton('Save scene');
-  playPatternButton = createButton('Play pattern');
-  loopPatternButton = createButton('Loop pattern');
-  stopLoopingPatternButton = createButton('Stop looping pattern');
-  saveSceneButton.position(width-330, 30);
-  playPatternButton.position(width-330, 50);
-  loopPatternButton.position(width-330, 70);
-  stopLoopingPatternButton.position(width-330, 90);
-  saveSceneButton.mousePressed(() => pattern.saveScene());      
-  playPatternButton.mousePressed(() => pattern.play());   
-  loopPatternButton.mousePressed(() => pattern.loop());   
-  stopLoopingPatternButton.mousePressed(() => pattern.stopLooping());
-}
-
-function createAndShowLiveUIButtons() {
-  playPatternDMXButton     = createButton('Play pattern');
-  loopPatternDMXButton     = createButton('Loop pattern');
-  stopLoopPatternDMXButton = createButton('Stop looping pattern');
-  playPatternDMXButton.position(10, 40);
-  loopPatternDMXButton.position(10, 60);
-  stopLoopPatternDMXButton.position(10, 80);
-  playPatternDMXButton.mousePressed(playPatternDMX);    
-  loopPatternDMXButton.mousePressed(loopPatternDMX);   
-  stopLoopPatternDMXButton.mousePressed(stopLoopingPatternDMX);     
+  patternsElement = createDiv('Patterns');
+  patternsElement.size(250, height/3);
+  patternsElement.position(width-250, 28);
+  patternsElement.style('background-color', '#ffffff');
+  patternsElement.style('overflow', 'auto');
+  patternsElement.style('overflow-x', 'hidden');
+  patternsElement.attribute('id', 'scenes-div');
+  patternsElement.attribute('font-family', 'Arial, Helvetica, sans-serif');
+  patternsListElement = createDiv('');
+  patternsListElement.style('width', '95%');
+  patternsListElement.style('height', '75%');
+  patternsListElement.style('background-color', '#ffffff');
+  patternsListElement.style('border-width', '1px');
+  patternsListElement.style('border-color', '#000000');
+  patternsListElement.style('border-style', 'solid');
+  patternsListElement.style('margin', '3px');
+  patternsListElement.style('overflow-y', 'auto');
+  makeNewPatternButton = createButton('Make new pattern');
+  makeNewPatternButton.style('border', '1px solid #000000');
+  makeNewPatternButton.mousePressed(() => makeNewPattern());
+  liveButton = createButton("LIVE");
+  liveButton.style('border', '1px solid #000000');
+  liveButton.mousePressed(() => toggleLive());
+  var linebreak = document.createElement("br");
+  patternsElement['elt'].appendChild(liveButton["elt"]);  
+  //patternsElement['elt'].appendChild(linebreak);  
+  patternsElement['elt'].appendChild(makeNewPatternButton['elt']);  
+  patternsElement['elt'].appendChild(patternsListElement['elt']);
+  //pattern = new Pattern(patterns.length);
+  //patterns.push(pattern);
 }
 
 function createAndShowUIButtons() {
@@ -194,6 +172,14 @@ function createAndShowUIButtons() {
   layoutEditModeButton.size(250);
 }
 
+function makeNewPattern() {
+  patterns.push(new Pattern(patterns.length));
+}
+
+function toggleLive() {
+  live = !live;
+}
+
 /* 
  * p5.js mouse event handlers
  */
@@ -211,3 +197,5 @@ function mouseReleased() {
   if (mode == 0)
     mouseReleasedLayoutEditingMode();
 }
+
+//function windowResized() { resizeCanvas(windowWidth, windowHeight); }

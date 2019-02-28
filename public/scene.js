@@ -7,9 +7,22 @@ class Scene {
     this.length = -1; // -1 is infinite
     this.length = 500; // ms that a scene should show for
     this.createUIElements();
+    this.addUIElements();
+  }
+
+  selected() {
+    this.selectButton.style('background-color', '#00ff00');
+  }
+
+  deselected() {
+    this.selectButton.style('background-color', '#ffffff');
   }
 
   show() {
+    for (var i = 0; i < this.parent.scenes.length; i++) {
+      this.parent.scenes[i].deselected();
+    }
+    this.selected();
     for (var f = 0; f < this.fixtureInfo.length; f++) { 
       var fixtureSavedState = this.fixtureInfo[f];
       for (var i = 0; i < universe.fixtures.length; i++) {
@@ -28,32 +41,36 @@ class Scene {
 
   createUIElements() {
     this.linebreakElement = document.createElement("br");
-    scenesElement['elt'].appendChild(this.linebreakElement);
-
     this.selectButton = createButton('Scene ' + (this.number+1).toString());
+    this.selectButton.style('border', '1px solid #000000');
     this.selectButton.mousePressed(() => this.show());
-    scenesElement['elt'].appendChild(this.selectButton['elt']);   
 
     this.deleteButton = createButton('X');
-    this.deleteButton['elt'].style.color = 'red';
+    this.deleteButton.style('border', '1px solid #000000');
     this.deleteButton.mousePressed(() => this.parent.removeScene(this.number));
-    scenesElement['elt'].appendChild(this.deleteButton['elt']);  
 
     this.timeInput = createInput('500');
     this.timeInput.size(50);
     this.timeInput.changed(() => {this.length = parseInt(this.timeInput.value())});
-    scenesElement['elt'].appendChild(this.timeInput['elt']);   
 
     this.msTextElement = document.createTextNode("ms");
-    scenesElement['elt'].appendChild(this.msTextElement);     
+  }
+
+  addUIElements() {
+    this.parent.scenesListElement['elt'].appendChild(this.selectButton['elt']);   
+    this.deleteButton['elt'].style.color = 'red';
+    this.parent.scenesListElement['elt'].appendChild(this.deleteButton['elt']);  
+    this.parent.scenesListElement['elt'].appendChild(this.timeInput['elt']);   
+    this.parent.scenesListElement['elt'].appendChild(this.msTextElement);     
+    this.parent.scenesListElement['elt'].appendChild(this.linebreakElement);
   }
 
   removeUIElements() {
-    scenesElement['elt'].removeChild(this.linebreakElement);
-    scenesElement['elt'].removeChild(this.selectButton['elt']);   
-    scenesElement['elt'].removeChild(this.deleteButton['elt']);  
-    scenesElement['elt'].removeChild(this.timeInput['elt']);   
-    scenesElement['elt'].removeChild(this.msTextElement);     
+    this.parent.scenesListElement['elt'].removeChild(this.linebreakElement);
+    this.parent.scenesListElement['elt'].removeChild(this.selectButton['elt']);   
+    this.parent.scenesListElement['elt'].removeChild(this.deleteButton['elt']);  
+    this.parent.scenesListElement['elt'].removeChild(this.timeInput['elt']);   
+    this.parent.scenesListElement['elt'].removeChild(this.msTextElement);     
   }
 
 }
